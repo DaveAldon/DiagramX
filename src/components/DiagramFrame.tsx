@@ -24,6 +24,8 @@ const Flow = () => {
         onEdgesChange={diagram.onEdgesChange}
         onNodeDragStop={diagram.onNodeDragStop}
         onConnect={diagram.onConnect}
+        onConnectEnd={diagram.onConnectEnd}
+        onConnectStart={diagram.onConnectStart}
         onInit={diagram.setRfInstance}
         proOptions={{
           hideAttribution: true,

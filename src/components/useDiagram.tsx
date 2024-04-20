@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Connection,
   Edge,
@@ -24,6 +24,9 @@ const flowKey = "example-flow";
 
 const getNodeId = () => `randomnode_${+new Date()}`;
 
+let id = 1;
+const getId = () => `${id++}`;
+
 export const useDiagram = () => {
   const reactFlowInstance = useReactFlow();
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
@@ -34,6 +37,8 @@ export const useDiagram = () => {
   const [draggingElements, setDraggingElements] = useState<NodeBase[]>(
     elements.nodes
   );
+  const connectingNodeId = useRef(null);
+  const reactFlowWrapper = useRef(null);
 
   const triggerUpdate = useCallback(
     (t: any, v: any) => {
@@ -104,6 +109,7 @@ export const useDiagram = () => {
 
   const onConnect = useCallback(
     (params: Connection) => {
+      connectingNodeId.current = null;
       setElements((els) => {
         const newEdge = {
           id: "edge-" + Math.random(),
@@ -119,6 +125,56 @@ export const useDiagram = () => {
       });
     },
     [setElements]
+  );
+
+  const onConnectStart = useCallback((_: any, { nodeId }: any) => {
+    connectingNodeId.current = nodeId;
+  }, []);
+
+  const onConnectEnd = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      if (!connectingNodeId.current) return;
+
+      const targetIsPane = (event.target as Element)?.classList.contains(
+        "react-flow__pane"
+      );
+
+      if (targetIsPane) {
+        const id = getNodeId();
+        const position = reactFlowInstance.screenToFlowPosition({
+          x: "clientX" in event ? event.clientX : event.touches[0].clientX,
+          y: "clientY" in event ? event.clientY : event.touches[0].clientY,
+        });
+        const newNode = {
+          id: getNodeId(),
+          data: { label: "Added node" },
+          position,
+        };
+
+        setElements((els) => {
+          const currentNode = els.nodes.find(
+            (node) => node.id === connectingNodeId.current
+          );
+
+          return {
+            ...els,
+            nodes: els.nodes.concat(newNode),
+            edges: els.edges.concat({
+              id: id.toString(),
+              source:
+                currentNode && position.y < currentNode.position.y
+                  ? id.toString()
+                  : connectingNodeId.current || "",
+              target:
+                currentNode && position.y < currentNode.position.y
+                  ? connectingNodeId.current || ""
+                  : id.toString(),
+            }),
+          };
+        });
+      }
+    },
+    [reactFlowInstance, setElements]
   );
 
   const onSave = useCallback(() => {
@@ -188,5 +244,7 @@ export const useDiagram = () => {
     rfInstance,
     setRfInstance,
     onConnect,
+    onConnectStart,
+    onConnectEnd,
   };
 };
