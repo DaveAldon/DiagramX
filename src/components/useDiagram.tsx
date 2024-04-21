@@ -12,6 +12,7 @@ import {
 } from "@xyflow/react";
 import useUndoable from "use-undoable";
 import { NodeBase } from "@xyflow/system";
+import { NodeType, nodeTypes } from "./Nodes";
 
 const initialNodes = [
   { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
@@ -38,7 +39,11 @@ export const useDiagram = () => {
     elements.nodes
   );
   const connectingNodeId = useRef(null);
-  const reactFlowWrapper = useRef(null);
+
+  // Node picker modal control
+  const [showModal, setShowModal] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [selectedNodeType, setSelectedNodeType] = useState("");
 
   const triggerUpdate = useCallback(
     (t: any, v: any) => {
@@ -131,51 +136,51 @@ export const useDiagram = () => {
     connectingNodeId.current = nodeId;
   }, []);
 
-  const onConnectEnd = useCallback(
-    (event: MouseEvent | TouchEvent) => {
-      if (!connectingNodeId.current) return;
+  const onNodeTypeSelect = useCallback(
+    (nodeType: string) => {
+      setSelectedNodeType(nodeType);
+      setShowModal(false);
 
-      const targetIsPane = (event.target as Element)?.classList.contains(
-        "react-flow__pane"
-      );
+      if (rfInstance) {
+        const flowPosition = rfInstance.screenToFlowPosition(modalPosition);
 
-      if (targetIsPane) {
         const id = getNodeId();
-        const position = reactFlowInstance.screenToFlowPosition({
-          x: "clientX" in event ? event.clientX : event.touches[0].clientX,
-          y: "clientY" in event ? event.clientY : event.touches[0].clientY,
-        });
         const newNode = {
-          id: getNodeId(),
-          data: { label: "Added node" },
-          position,
+          id,
+          data: { label: `Node` },
+          type: nodeType,
+          position: flowPosition,
         };
 
-        setElements((els) => {
-          const currentNode = els.nodes.find(
-            (node) => node.id === connectingNodeId.current
-          );
-
-          return {
-            ...els,
-            nodes: els.nodes.concat(newNode),
-            edges: els.edges.concat({
-              id: id.toString(),
-              source:
-                currentNode && position.y < currentNode.position.y
-                  ? id.toString()
-                  : connectingNodeId.current || "",
-              target:
-                currentNode && position.y < currentNode.position.y
-                  ? connectingNodeId.current || ""
-                  : id.toString(),
-            }),
-          };
-        });
+        setElements((els) => ({
+          ...els,
+          nodes: els.nodes.concat(newNode),
+          edges: els.edges.concat({
+            id: id.toString(),
+            source: connectingNodeId.current || "",
+            target: id.toString(),
+          }),
+        }));
       }
     },
-    [reactFlowInstance, setElements]
+    [rfInstance, modalPosition, setElements]
   );
+
+  const onConnectEnd = useCallback((event: MouseEvent | TouchEvent) => {
+    if (!connectingNodeId.current) return;
+
+    const targetIsPane = (event.target as Element)?.classList.contains(
+      "react-flow__pane"
+    );
+
+    if (targetIsPane) {
+      setModalPosition({
+        x: "clientX" in event ? event.clientX : event.touches[0].clientX,
+        y: "clientY" in event ? event.clientY : event.touches[0].clientY,
+      });
+      setShowModal(true);
+    }
+  }, []);
 
   const onSave = useCallback(() => {
     if (rfInstance) {
@@ -202,7 +207,10 @@ export const useDiagram = () => {
           nodes: flow.nodes,
           edges: flow.edges,
         });
-        reactFlowInstance.setViewport({ ...flow.transform, ...flow.zoom });
+        reactFlowInstance.setViewport(
+          { ...flow.transform, ...flow.zoom },
+          { duration: 800 }
+        );
       }
     };
 
@@ -213,6 +221,7 @@ export const useDiagram = () => {
     const newNode = {
       id: getNodeId(),
       data: { label: "Added node" },
+      type: NodeType.Triangle,
       position: {
         x: Math.random() * window.innerWidth - 100,
         y: Math.random() * window.innerHeight,
@@ -246,5 +255,10 @@ export const useDiagram = () => {
     onConnect,
     onConnectStart,
     onConnectEnd,
+    nodeTypes,
+    showModal,
+    setShowModal,
+    modalPosition,
+    onNodeTypeSelect,
   };
 };
