@@ -1,96 +1,111 @@
-import { Handle, Position } from "@xyflow/react";
-import React from "react";
+import {
+  Handle,
+  NodeResizer,
+  Position,
+  useUpdateNodeInternals,
+} from "@xyflow/react";
+import React, { useEffect, useRef, useState } from "react";
+import { drag } from "d3-drag";
+import { select } from "d3-selection";
 
 export const enum NodeType {
   Circle = "circle",
   Rectangle = "rectangle",
-  Triangle = "triangle",
   Text = "text",
 }
 
-const RectangleNode = ({ data }: { data: any }) => {
-  return (
-    <div style={{ background: "#9ca8b3", padding: "14px" }}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${data.id}.left`}
-        style={{ borderRadius: 0 }}
-      />
-      <div id={data.id}>{data.label}</div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${data.id}.right1`}
-        style={{ top: "30%", borderRadius: 0 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${data.id}.right2`}
-        style={{ top: "70%", borderRadius: 0 }}
-      />
-    </div>
-  );
-};
+interface NodeProps {
+  data?: any;
+  hide?: boolean;
+  children?: React.ReactNode;
+  className?: string;
+  id?: string;
+  nodeType?: NodeType;
+}
 
-const CircleNode = ({ data }: { data: any }) => {
-  return (
-    <div
-      style={{
-        backgroundColor: "#9ca8b3",
-        padding: "14px",
-        borderRadius: "50px",
-      }}
-    >
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${data.id}.left`}
-        style={{ borderRadius: "0" }}
-      />
-      <div id={data.id}>{data.label}</div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${data.id}.right1`}
-        style={{ top: "30%", borderRadius: 0 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${data.id}.right2`}
-        style={{ top: "70%", borderRadius: 0 }}
-      />
-    </div>
-  );
-};
+export const CustomNode = (props: NodeProps) => {
+  const nodeRef = useRef(null);
+  const rotateControlRef = useRef(null);
+  const updateNodeInternals = useUpdateNodeInternals();
+  const [rotation, setRotation] = useState(0);
+  const [resizable, setResizable] = useState(true);
+  const [rotatable, setRotatable] = useState(true);
 
-const TriangleNode = ({ data }: { data: any }) => {
+  useEffect(() => {
+    if (!rotateControlRef.current || props.hide) {
+      return;
+    }
+    const selection = select<Element, unknown>(rotateControlRef.current);
+
+    const dragHandler = drag().on("drag", (evt) => {
+      const dx = evt.x - 100;
+      const dy = evt.y - 100;
+      const rad = Math.atan2(dx, dy);
+      const deg = rad * (180 / Math.PI);
+      setRotation(180 - deg);
+      updateNodeInternals(props.id as string);
+    });
+
+    selection.call(dragHandler);
+  }, [props.hide, props.id, updateNodeInternals]);
+
   return (
-    <div className="triangle-node">
-      <Handle
-        type="target"
-        position={Position.Top}
-        id={`${data.id}.top`}
-        style={{ borderRadius: 0 }}
-      />
-      <div id={data.id} className="triangle-node-text">
-        {data.label}
+    <>
+      <div
+        ref={nodeRef}
+        style={{
+          transform: `rotate(${rotation}deg)`,
+        }}
+        className={
+          props.nodeType === NodeType.Circle
+            ? "node bg-[#9ca8b3] rounded-full"
+            : "node rectangle-node"
+        }
+      >
+        {!props.hide && (
+          <>
+            <NodeResizer
+              isVisible={resizable}
+              minWidth={10}
+              minHeight={10}
+              onResize={() => updateNodeInternals(props.id as string)}
+            />
+            <div
+              ref={rotateControlRef}
+              style={{
+                display: rotatable ? "block" : "none",
+              }}
+              className={`nodrag rotateHandle`}
+            />
+            <div id={props.id}>{props.data.label}</div>
+            <Handle
+              type="source"
+              position={Position.Left}
+              id={`${props.id}.left1`}
+              className="rounded-full"
+            />
+            <Handle
+              type="source"
+              position={Position.Right}
+              id={`${props.id}.right1`}
+              className="rounded-full"
+            />
+            <Handle
+              type="source"
+              position={Position.Top}
+              id={`${props.id}.top1`}
+              className="rounded-full"
+            />
+            <Handle
+              type="source"
+              position={Position.Bottom}
+              id={`${props.id}.bottom1`}
+              className="rounded-full"
+            />
+          </>
+        )}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id={`${data.id}.bottom1`}
-        style={{ left: "30%", borderRadius: 0 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id={`${data.id}.bottom2`}
-        style={{ left: "70%", borderRadius: 0 }}
-      />
-    </div>
+    </>
   );
 };
 
@@ -103,8 +118,11 @@ export const TextNode = ({ data }: { data: any }) => {
 };
 
 export const nodeTypes = {
-  circle: CircleNode,
-  rectangle: RectangleNode,
-  triangle: TriangleNode,
+  circle: (props: NodeProps) => (
+    <CustomNode {...props} nodeType={NodeType.Circle} />
+  ),
+  rectangle: (props: NodeProps) => (
+    <CustomNode {...props} nodeType={NodeType.Rectangle} />
+  ),
   text: TextNode,
 };

@@ -4,19 +4,33 @@ import {
   Edge,
   EdgeChange,
   NodeChange,
+  OnConnect,
   ReactFlowInstance,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
   useReactFlow,
+  useUpdateNodeInternals,
 } from "@xyflow/react";
 import useUndoable from "use-undoable";
 import { NodeBase } from "@xyflow/system";
-import { NodeType, nodeTypes } from "./Nodes";
+import { NodeType } from "./Nodes";
 
 const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
+  {
+    id: "1",
+    position: { x: 0, y: 0 },
+    data: { label: "1" },
+    type: NodeType.Rectangle,
+    style: { width: 180, height: 100 },
+  },
+  {
+    id: "2",
+    position: { x: 0, y: 100 },
+    data: { label: "2" },
+    type: NodeType.Rectangle,
+    style: { width: 180, height: 100 },
+  },
 ];
 
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
@@ -25,11 +39,9 @@ const flowKey = "example-flow";
 
 const getNodeId = () => `randomnode_${+new Date()}`;
 
-let id = 1;
-const getId = () => `${id++}`;
-
 export const useDiagram = () => {
   const reactFlowInstance = useReactFlow();
+  const updateNodeInternals = useUpdateNodeInternals();
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const [elements, setElements, { undo, redo, reset }] = useUndoable({
     nodes: initialNodes,
@@ -43,7 +55,6 @@ export const useDiagram = () => {
   // Node picker modal control
   const [showModal, setShowModal] = useState(false);
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
-  const [selectedNodeType, setSelectedNodeType] = useState("");
 
   const triggerUpdate = useCallback(
     (t: any, v: any) => {
@@ -98,21 +109,25 @@ export const useDiagram = () => {
 
   const onEdgeUpdate = useCallback(
     (oldEdge: Edge, newConnection: Connection) => {
-      console.log("onEdgeUpdate", oldEdge, newConnection);
-      setElements((els) => {
-        const updatedEdges = els.edges.map((edge) => {
-          if (edge.id === oldEdge.id) {
-            return { ...edge, ...newConnection };
-          }
-          return edge;
+      if (newConnection.target === null) {
+        setModalPosition(modalPosition);
+        setShowModal(true);
+      } else {
+        setElements((els) => {
+          const updatedEdges = els.edges.map((edge) => {
+            if (edge.id === oldEdge.id) {
+              return { ...edge, ...newConnection };
+            }
+            return edge;
+          });
+          return { ...els, edges: updatedEdges };
         });
-        return { ...els, edges: updatedEdges };
-      });
+      }
     },
-    [setElements]
+    [setElements, modalPosition]
   );
 
-  const onConnect = useCallback(
+  const onConnect: OnConnect = useCallback(
     (params: Connection) => {
       connectingNodeId.current = null;
       setElements((els) => {
@@ -120,6 +135,8 @@ export const useDiagram = () => {
           id: "edge-" + Math.random(),
           source: params.source,
           target: params.target,
+          sourceHandle: params.sourceHandle,
+          targetHandle: params.targetHandle,
           animated: true,
           arrowHeadType: "arrowclosed",
         };
@@ -138,7 +155,6 @@ export const useDiagram = () => {
 
   const onNodeTypeSelect = useCallback(
     (nodeType: string) => {
-      setSelectedNodeType(nodeType);
       setShowModal(false);
 
       if (rfInstance) {
@@ -150,11 +166,15 @@ export const useDiagram = () => {
           data: { label: `Node` },
           type: nodeType,
           position: flowPosition,
+          style: { width: 180, height: 100 },
         };
 
         setElements((els) => ({
           ...els,
-          nodes: els.nodes.concat(newNode),
+          nodes: els.nodes.concat({
+            ...newNode,
+            type: nodeType as NodeType,
+          }),
           edges: els.edges.concat({
             id: id.toString(),
             source: connectingNodeId.current || "",
@@ -173,7 +193,11 @@ export const useDiagram = () => {
       "react-flow__pane"
     );
 
-    if (targetIsPane) {
+    const targetIsHandle = (event.target as Element)?.classList.contains(
+      "react-flow__handle"
+    );
+
+    if (targetIsPane && !targetIsHandle) {
       setModalPosition({
         x: "clientX" in event ? event.clientX : event.touches[0].clientX,
         y: "clientY" in event ? event.clientY : event.touches[0].clientY,
@@ -215,17 +239,21 @@ export const useDiagram = () => {
     };
 
     restoreFlow();
-  }, [reactFlowInstance, setElements]);
+    elements.nodes.forEach((node) => {
+      updateNodeInternals(node.id);
+    });
+  }, [elements.nodes, reactFlowInstance, setElements, updateNodeInternals]);
 
   const onAdd = useCallback(() => {
     const newNode = {
       id: getNodeId(),
       data: { label: "Added node" },
-      type: NodeType.Triangle,
+      type: NodeType.Rectangle,
       position: {
         x: Math.random() * window.innerWidth - 100,
         y: Math.random() * window.innerHeight,
       },
+      style: { width: 180, height: 100 },
     };
     triggerUpdate("nodes", (elements.nodes || []).concat(newNode));
   }, [triggerUpdate, elements.nodes]);
@@ -255,7 +283,6 @@ export const useDiagram = () => {
     onConnect,
     onConnectStart,
     onConnectEnd,
-    nodeTypes,
     showModal,
     setShowModal,
     modalPosition,

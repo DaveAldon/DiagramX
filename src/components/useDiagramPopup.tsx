@@ -9,7 +9,6 @@ export const useDiagramPopup = (diagram: any) => {
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        console.log("Clicked outside");
         diagram.setShowModal(false);
       }
     }

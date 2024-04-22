@@ -1,5 +1,6 @@
 import {
   Background,
+  ConnectionMode,
   Controls,
   MiniMap,
   Panel,
@@ -8,7 +9,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useDiagram } from "./useDiagram";
-import { NodeType } from "./Nodes";
+import { NodeType, CustomNode, nodeTypes } from "./Nodes";
 import "./nodeStyles.css";
 import { useDiagramPopup } from "./useDiagramPopup";
 
@@ -22,7 +23,7 @@ const Flow = () => {
       <button onClick={() => diagram.redo()}>redo</button>
       <div
         ref={diagramPopup.modalRef}
-        className={`absolute bg-slate-900 text-white h-16 w-64 rounded-md p-2 flex flex-row gap-2 z-50 ${
+        className={`absolute bg-slate-900 justify-between items-center text-white h-16 w-32 rounded-md p-2 flex flex-row z-50 ${
           diagram.showModal ? "block" : "hidden"
         }`}
         style={{
@@ -31,13 +32,10 @@ const Flow = () => {
         }}
       >
         <button onClick={() => diagram.onNodeTypeSelect(NodeType.Circle)}>
-          Circle
-        </button>
-        <button onClick={() => diagram.onNodeTypeSelect(NodeType.Triangle)}>
-          Triangle
+          <CustomNode nodeType={NodeType.Circle} hide className="h-8 w-8" />
         </button>
         <button onClick={() => diagram.onNodeTypeSelect(NodeType.Rectangle)}>
-          Rectangle
+          <CustomNode nodeType={NodeType.Rectangle} hide className="h-8 w-8" />
         </button>
       </div>
       <ReactFlow
@@ -51,7 +49,8 @@ const Flow = () => {
         onConnectEnd={diagram.onConnectEnd}
         onConnectStart={diagram.onConnectStart}
         onInit={diagram.setRfInstance}
-        nodeTypes={diagram.nodeTypes}
+        nodeTypes={nodeTypes}
+        connectionMode={ConnectionMode.Loose}
         proOptions={{
           hideAttribution: true,
         }}
