@@ -21,6 +21,8 @@ interface NodeProps {
   className?: string;
   id?: string;
   nodeType?: NodeType;
+  height?: number;
+  width?: number;
 }
 
 export const CustomNode = (props: NodeProps) => {
@@ -30,6 +32,13 @@ export const CustomNode = (props: NodeProps) => {
   const [rotation, setRotation] = useState(0);
   const [resizable, setResizable] = useState(true);
   const [rotatable, setRotatable] = useState(true);
+
+  useEffect(() => {
+    if (!rotateControlRef.current || props.hide || !props.data.rotation) {
+      return;
+    }
+    setRotation(props.data.rotation);
+  }, [props.data?.rotation, props.hide]);
 
   useEffect(() => {
     if (!rotateControlRef.current || props.hide) {
@@ -43,11 +52,12 @@ export const CustomNode = (props: NodeProps) => {
       const rad = Math.atan2(dx, dy);
       const deg = rad * (180 / Math.PI);
       setRotation(180 - deg);
+      props.data.rotation = 180 - deg;
       updateNodeInternals(props.id as string);
     });
 
     selection.call(dragHandler);
-  }, [props.hide, props.id, updateNodeInternals]);
+  }, [props.data, props.hide, props.id, updateNodeInternals]);
 
   return (
     <>
@@ -68,7 +78,9 @@ export const CustomNode = (props: NodeProps) => {
               isVisible={resizable}
               minWidth={10}
               minHeight={10}
-              onResize={() => updateNodeInternals(props.id as string)}
+              onResize={() => {
+                updateNodeInternals(props.id as string);
+              }}
             />
             <div
               ref={rotateControlRef}

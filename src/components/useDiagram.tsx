@@ -66,6 +66,45 @@ export const useDiagram = () => {
     [setElements]
   );
 
+  const onSave = useCallback(() => {
+    if (rfInstance) {
+      const flow = rfInstance.toObject();
+      const zoom = rfInstance.getZoom();
+      const transform = rfInstance.getViewport();
+
+      localStorage.setItem(
+        flowKey,
+        JSON.stringify({ ...flow, transform, zoom })
+      );
+    }
+  }, [rfInstance]);
+
+  const viewSave = useCallback(() => {
+    const flow = JSON.parse(localStorage.getItem(flowKey) as string);
+    console.log(flow);
+  }, []);
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey) as string);
+      if (flow) {
+        setElements({
+          nodes: flow.nodes,
+          edges: flow.edges,
+        });
+        reactFlowInstance.setViewport(
+          { ...flow.transform, ...flow.zoom },
+          { duration: 800 }
+        );
+      }
+    };
+
+    restoreFlow();
+    elements.nodes.forEach((node) => {
+      updateNodeInternals(node.id);
+    });
+  }, [elements.nodes, reactFlowInstance, setElements, updateNodeInternals]);
+
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
       setDraggingElements(applyNodeChanges(changes, draggingElements));
@@ -74,7 +113,7 @@ export const useDiagram = () => {
   );
 
   const onNodeDragStop = useCallback(
-    (event: any, node: { id: string; position: any }) => {
+    (_event: any, node: { id: string; position: any }) => {
       setElements((els) => {
         const index = els.nodes.findIndex((e) => e.id === node.id);
         if (index === -1) {
@@ -93,8 +132,10 @@ export const useDiagram = () => {
         return newEls;
       });
       setDraggingElements(elements.nodes);
+      onSave();
+      onRestore();
     },
-    [setElements, elements.nodes]
+    [setElements, elements.nodes, onSave, onRestore]
   );
 
   const onEdgesChange = useCallback(
@@ -205,44 +246,6 @@ export const useDiagram = () => {
       setShowModal(true);
     }
   }, []);
-
-  const onSave = useCallback(() => {
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
-      const zoom = rfInstance.getZoom();
-      const transform = rfInstance.getViewport();
-      localStorage.setItem(
-        flowKey,
-        JSON.stringify({ ...flow, transform, zoom })
-      );
-    }
-  }, [rfInstance]);
-
-  const viewSave = useCallback(() => {
-    const flow = JSON.parse(localStorage.getItem(flowKey) as string);
-    console.log(flow);
-  }, []);
-
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem(flowKey) as string);
-      if (flow) {
-        setElements({
-          nodes: flow.nodes,
-          edges: flow.edges,
-        });
-        reactFlowInstance.setViewport(
-          { ...flow.transform, ...flow.zoom },
-          { duration: 800 }
-        );
-      }
-    };
-
-    restoreFlow();
-    elements.nodes.forEach((node) => {
-      updateNodeInternals(node.id);
-    });
-  }, [elements.nodes, reactFlowInstance, setElements, updateNodeInternals]);
 
   const onAdd = useCallback(() => {
     const newNode = {
