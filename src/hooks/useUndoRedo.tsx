@@ -10,6 +10,7 @@ type UseUndoRedo = (options?: UseUndoRedoOptions) => {
   undo: () => void;
   redo: () => void;
   takeSnapshot: () => void;
+  getSnapshotJson: () => string;
   canUndo: boolean;
   canRedo: boolean;
 };
@@ -45,6 +46,10 @@ export const useUndoRedo: UseUndoRedo = ({
     // whenever we take a new snapshot, the redo operations need to be cleared to avoid state mismatches
     setFuture([]);
   }, [getNodes, getEdges, maxHistorySize]);
+
+  const getSnapshotJson = useCallback(() => {
+    return JSON.stringify({ nodes: getNodes(), edges: getEdges() });
+  }, [getNodes, getEdges]);
 
   const undo = useCallback(() => {
     // get the last state that we want to go back to
@@ -104,6 +109,7 @@ export const useUndoRedo: UseUndoRedo = ({
     undo,
     redo,
     takeSnapshot,
+    getSnapshotJson,
     canUndo: !past.length,
     canRedo: !future.length,
   };

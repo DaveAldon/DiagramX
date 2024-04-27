@@ -187,5 +187,7 @@ export const useDiagram = () => {
     onEdgesDelete,
     undo,
     redo,
+    canRedo,
+    canUndo,
   };
 };
