@@ -31,3 +31,148 @@ body {
     text-wrap: balance;
   }
 }
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.react-flow {
+  --background: #e2e8f0;
+  --panel-background: #f8fafc;
+  --panel-shadow: 0 0 4px 0 rgb(0 0 0 / 0.2);
+  --text: #0a0a0a;
+
+  background-color: var(--background);
+}
+
+.react-flow.dark {
+  --background: #0f172a;
+  --panel-background: #1e293b;
+  --panel-shadow: 0 0 8px 0 rgb(0 0 0 / 0.4);
+  --text: #fafafa;
+}
+
+.react-flow__panel,
+.react-flow__node-toolbar {
+  background-color: var(--panel-background);
+  box-shadow: var(--panel-shadow);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.react-flow svg {
+  display: block;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--background);
+  fill-opacity: 0.85;
+}
+
+.react-flow__node-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.react-flow__controls-button,
+.react-flow__controls-button:hover {
+  background: var(--panel-background);
+  border-bottom: none;
+}
+
+.react-flow__controls-button > svg {
+  fill: var(--text);
+}
+
+.react-flow__handle {
+  opacity: 0;
+  z-index: 10;
+}
+
+.react-flow__node.selected .react-flow__handle {
+  opacity: 1;
+}
+
+.react-flow__handle,
+.react-flow__resize-control.handle {
+  border: 1px solid var(--background);
+}
+
+.sidebar-label {
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 4px;
+  user-select: none;
+}
+
+.sidebar-items {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.sidebar-item {
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-item > svg {
+  stroke: var(--text);
+}
+
+.sidebar-item:hover {
+  opacity: 1;
+  background-color: var(--background);
+}
+
+.sidebar-item-drag-image {
+  transform: translate(0, 0);
+  position: absolute;
+  top: -100000px;
+  left: -1000000px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: none;
+  border: 1px solid var(--panel-background);
+  cursor: pointer;
+}
+
+.color-swatch.active {
+  outline: 2px solid var(--text);
+}
+
+.node-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--text);
+}
+
+.node-label::placeholder {
+  color: var(--text);
+  opacity: 0.5;
+}

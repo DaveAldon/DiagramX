@@ -1,6 +1,7 @@
 import {
   Handle,
   NodeResizer,
+  NodeResizerProps,
   Position,
   useUpdateNodeInternals,
 } from "@xyflow/react";
@@ -74,21 +75,25 @@ export const CustomNode = (props: NodeProps) => {
       >
         {!props.hide && (
           <>
-            <NodeResizer
-              isVisible={resizable}
-              minWidth={10}
-              minHeight={10}
-              onResize={() => {
-                updateNodeInternals(props.id as string);
-              }}
-            />
-            <div
-              ref={rotateControlRef}
-              style={{
-                display: rotatable ? "block" : "none",
-              }}
-              className={`nodrag rotateHandle`}
-            />
+            {"234" === props.id ? (
+              <>
+                <NodeResizer
+                  isVisible={resizable}
+                  minWidth={10}
+                  minHeight={10}
+                  onResize={() => {
+                    updateNodeInternals(props.id as string);
+                  }}
+                />
+                <div
+                  ref={rotateControlRef}
+                  style={{
+                    display: rotatable ? "block" : "none",
+                  }}
+                  className={`nodrag rotateHandle`}
+                />
+              </>
+            ) : null}
             <div id={props.id}>{props.data.label}</div>
             <Handle
               type="source"
