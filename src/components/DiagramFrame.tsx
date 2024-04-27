@@ -2,6 +2,7 @@ import {
   Background,
   ConnectionLineType,
   ConnectionMode,
+  ControlButton,
   Controls,
   DefaultEdgeOptions,
   MarkerType,
@@ -17,8 +18,9 @@ import ShapeNode from "./shape-node";
 import { defaultEdges, defaultNodes } from "./initial-elements";
 import Sidebar from "./Sidebar/Sidebar";
 import MiniMapNode from "./minimap-node";
-import { useControls } from "leva";
+import { Leva, useControls } from "leva";
 import { useDiagram } from "@/hooks/useDiagram";
+import { CornerUpLeft, CornerUpRight } from "react-feather";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -67,6 +69,10 @@ const Flow = ({
         onDragOver={diagram.onDragOver}
         zoomOnDoubleClick={zoomOnDoubleClick}
         onNodesChange={diagram.onNodesChange}
+        onNodeDragStart={diagram.onNodeDragStart}
+        onSelectionDragStart={diagram.onSelectionDragStart}
+        onNodesDelete={diagram.onNodesDelete}
+        onEdgesDelete={diagram.onEdgesDelete}
         elevateEdgesOnSelect
         elevateNodesOnSelect
       >
@@ -74,7 +80,18 @@ const Flow = ({
         <Panel position="top-left">
           <Sidebar />
         </Panel>
-        <Controls />
+        <Controls showInteractive={false} className="bg-red-400">
+          <ControlButton
+            onClick={() => diagram.undo()}
+            title="Undo"
+            className="bg-red-500"
+          >
+            <CornerUpLeft fillOpacity={0} />
+          </ControlButton>
+          <ControlButton onClick={() => diagram.redo()} title="Redo">
+            <CornerUpRight fillOpacity={0} />
+          </ControlButton>
+        </Controls>
         <MiniMap zoomable draggable nodeComponent={MiniMapNode} />
         <diagram.HelperLines
           horizontal={diagram.helperLineHorizontal}
@@ -94,6 +111,7 @@ const DiagramFrame = () => {
   });
   return (
     <ReactFlowProvider>
+      <Leva hidden />
       <Flow {...props} />
     </ReactFlowProvider>
   );

@@ -10,11 +10,13 @@
     "kill": "kill -9 $(lsof -ti:3000)"
   },
   "dependencies": {
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@xyflow/react": "^12.0.0-next.15",
     "leva": "^0.9.35",
     "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-feather": "^2.0.10",
     "react-modal": "^3.16.1",
     "use-undoable": "^5.0.0"
   },

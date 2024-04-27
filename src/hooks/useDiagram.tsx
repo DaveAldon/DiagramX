@@ -1,7 +1,11 @@
-import { useHelperLines } from "@/components/HelperLines/useHelperLines";
+import { useHelperLines } from "@/hooks/useHelperLines";
 import {
   OnConnect,
+  OnEdgesDelete,
+  OnNodeDrag,
   OnNodesChange,
+  OnNodesDelete,
+  SelectionDragHandler,
   addEdge,
   applyNodeChanges,
   useReactFlow,
@@ -13,9 +17,11 @@ import {
   useRef,
   useState,
 } from "react";
+import useUndoRedo from "./useUndoRedo";
 
 export const useDiagram = () => {
   const { screenToFlowPosition, setNodes, setEdges, getNode } = useReactFlow();
+  const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const connectingNodeId = useRef(null);
   const {
     HelperLines,
@@ -54,6 +60,7 @@ export const useDiagram = () => {
 
   // this function is called when a node from the sidebar is dropped onto the react flow pane
   const onDrop: DragEventHandler<HTMLDivElement> = (evt) => {
+    takeSnapshot();
     evt.preventDefault();
     const type = evt.dataTransfer.getData("application/reactflow");
 
@@ -76,7 +83,6 @@ export const useDiagram = () => {
     setNodes((nodes) =>
       nodes.map((n) => ({ ...n, selected: false })).concat([newNode])
     );
-    //setSelectedNodeId(newNode.id);
   };
 
   const onNodesChange: OnNodesChange = useCallback(
@@ -103,6 +109,7 @@ export const useDiagram = () => {
   const onConnectEnd = useCallback(
     (event: MouseEvent | TouchEvent) => {
       if (!connectingNodeId.current) return;
+      takeSnapshot();
       event.preventDefault();
       const targetIsPane = (event.target as Element)?.classList.contains(
         "react-flow__pane"
@@ -143,8 +150,24 @@ export const useDiagram = () => {
         setSelectedNodeId(newNode.id);
       }
     },
-    [screenToFlowPosition, setEdges, setNodes]
+    [screenToFlowPosition, setEdges, setNodes, takeSnapshot]
   );
+
+  const onNodeDragStart: OnNodeDrag = useCallback(() => {
+    takeSnapshot();
+  }, [takeSnapshot]);
+
+  const onSelectionDragStart: SelectionDragHandler = useCallback(() => {
+    takeSnapshot();
+  }, [takeSnapshot]);
+
+  const onNodesDelete: OnNodesDelete = useCallback(() => {
+    takeSnapshot();
+  }, [takeSnapshot]);
+
+  const onEdgesDelete: OnEdgesDelete = useCallback(() => {
+    takeSnapshot();
+  }, [takeSnapshot]);
 
   return {
     onDragOver,
@@ -158,5 +181,11 @@ export const useDiagram = () => {
     HelperLines,
     helperLineHorizontal,
     helperLineVertical,
+    onNodeDragStart,
+    onSelectionDragStart,
+    onNodesDelete,
+    onEdgesDelete,
+    undo,
+    redo,
   };
 };

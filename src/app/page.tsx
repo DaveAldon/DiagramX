@@ -11,7 +11,7 @@ export default function Home() {
         </div>
         <div
           style={{
-            height: "calc(100vh - 6rem)",
+            height: "calc(100vh - 4rem)",
             width: "100vw",
           }}
         >

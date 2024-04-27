@@ -13,6 +13,7 @@ import { type ShapeType } from "../shape/types";
 import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
 import { useEffect } from "react";
+import useUndoRedo from "@/hooks/useUndoRedo";
 
 export type ShapeNodeData = {
   type: ShapeType;
@@ -32,12 +33,14 @@ const ShapeNode = ({ id, selected, data }: any) => {
   const { color, type }: { color: string; type: ShapeType } = data as any;
   const { setNodes } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
+  const { takeSnapshot } = useUndoRedo();
 
   const { width, height } = useNodeDimensions(id);
   const shiftKeyPressed = useKeyPress("Shift");
   const handleStyle = { backgroundColor: color };
 
   const onColorChange = (color: string) => {
+    takeSnapshot();
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === id) {
@@ -56,6 +59,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
   };
 
   const onShapeChange = (shape: ShapeType) => {
+    takeSnapshot();
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === id) {
@@ -94,6 +98,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
         keepAspectRatio={shiftKeyPressed}
         isVisible={selected}
         onResize={onResize}
+        onResizeStart={takeSnapshot}
       />
       <Shape
         type={type}

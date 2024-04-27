@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { Node, NodeChange } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { getHelperLines } from "./getHelperLines";
-import HelperLines from "./HelperLines";
+import { getHelperLines } from "../components/HelperLines/getHelperLines";
+import HelperLines from "../components/HelperLines/HelperLines";
 
 // this example shows how to implement helper lines within React Flow
 // usage: drag nodes around to see them snap and align with other nodes boundaries
