@@ -19,3 +19,12 @@
 .json-viewer::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+.json-viewer > .react-monaco-editor-container {
+  width: 100%;
+}
+
+.json-viewer {
+  width: 100%;
+  height: 100%;
+}

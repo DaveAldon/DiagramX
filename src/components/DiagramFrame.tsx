@@ -27,9 +27,12 @@ import {
   PanelResizeHandle,
   Panel as ResizablePanel,
 } from "react-resizable-panels";
-import JsonViewer from "./JsonViewer/JsonViewer";
-import { useState } from "react";
+const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
+  ssr: false,
+});
+import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
+import dynamic from "next/dynamic";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -106,7 +109,7 @@ const Flow = () => {
             >
               <button>{isSidebarOpen ? "Hide" : "Show"} JSON</button>
             </Panel>
-            <Controls showInteractive={false} className="bg-red-400">
+            <Controls showInteractive={false}>
               <ControlButton onClick={() => diagram.undo()} title="Undo">
                 <CornerUpLeft fillOpacity={0} />
               </ControlButton>
@@ -123,7 +126,9 @@ const Flow = () => {
         </ResizablePanel>
         <PanelResizeHandle
           className={`w-1 cursor-col-resize ${
-            isSidebarOpen === true ? "bg-stone-600" : "bg-transparent"
+            isSidebarOpen === true
+              ? "bg-stone-600 visible"
+              : "bg-transparent hidden"
           }`}
         />
         {isSidebarOpen ? (
