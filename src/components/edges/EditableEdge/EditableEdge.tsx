@@ -55,7 +55,8 @@ export function EditableEdge({
 }: EdgeProps) {
   const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
   const targetOrigin = { x: targetX, y: targetY } as XYPosition;
-  const color = style?.stroke;
+  const color = style?.stroke || "#FFFFFF80";
+  const direction = (data.direction as string) || "normal";
   const { setEdges } = useReactFlow();
   const shouldShowPoints = useStore((store) => {
     const sourceNode = store.nodeLookup.get(source as string)!;
@@ -81,7 +82,7 @@ export function EditableEdge({
     [id, setEdges]
   );
 
-  const pathPoints = [
+  let pathPoints = [
     sourceOrigin,
     ...(Array.isArray(data.points) ? data.points : []),
     targetOrigin,
@@ -132,7 +133,13 @@ export function EditableEdge({
         fill={`${color}`}
         className="circle"
       >
-        <animateMotion dur="6s" repeatCount="indefinite" path={path} />
+        <animateMotion
+          dur="6s"
+          repeatCount="indefinite"
+          path={path}
+          keyPoints={direction === "normal" ? undefined : "1;0"}
+          keyTimes={direction === "normal" ? undefined : "0;1"}
+        />
       </circle>
     </>
   );
