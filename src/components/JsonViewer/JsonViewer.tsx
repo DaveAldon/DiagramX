@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import MonacoEditor from "react-monaco-editor";
 import "./jsonViewer.css";
+
 interface JsonViewerProps {
   jsonString: string;
 }
@@ -10,6 +11,8 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
   const observedDiv = useRef<any>(null);
   const [width, setWidth] = useState();
   const [height, setHeight] = useState();
+  const [syntaxHighlighting, setSyntaxHighlighting] = useState<boolean>(false);
+
   try {
     const jsonObj = JSON.parse(jsonString);
     prettyJsonString = JSON.stringify(jsonObj, null, 2);
@@ -55,12 +58,34 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
     [observedDiv.current]
   );
 
+  const copyAll = async () => {
+    await navigator.clipboard.writeText(prettyJsonString);
+    alert("Copied to clipboard");
+  };
+
   return (
-    <div ref={observedDiv} className="w-full json-viewer overflow-y-auto">
+    <div
+      ref={observedDiv}
+      className="w-full json-viewer overflow-y-auto bg-[#1e1e1e]"
+    >
+      <div className="flex flex-row h-16">
+        <button
+          className="text-white p-2 m-2 bg-slate-800 rounded-md"
+          onClick={copyAll}
+        >
+          Copy
+        </button>
+        <button
+          className="text-white p-2 m-2 bg-slate-800 rounded-md"
+          onClick={() => setSyntaxHighlighting(!syntaxHighlighting)}
+        >
+          Toggle syntax highlight
+        </button>
+      </div>
       <MonacoEditor
         width={width}
         height={height}
-        language="json"
+        language={syntaxHighlighting ? "json" : ""}
         theme="vs-dark"
         value={prettyJsonString}
         options={{
@@ -73,6 +98,8 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
           minimap: {
             enabled: true,
           },
+          stopRenderingLineAfter: 1000,
+          mouseWheelZoom: true,
         }}
       />
     </div>

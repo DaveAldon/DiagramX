@@ -30,7 +30,7 @@ import {
 const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
   ssr: false,
 });
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 
