@@ -40,7 +40,11 @@ export default function ButtonEdge({
 
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
+      <BaseEdge
+        path={edgePath}
+        markerEnd={markerEnd}
+        style={{ ...style, strokeWidth: 2 }}
+      />
       {/* <EdgeLabelRenderer>
         <div
           style={{

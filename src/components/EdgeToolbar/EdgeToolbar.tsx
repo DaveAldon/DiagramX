@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { ShapeComponents, ShapeType } from "../shape/types";
-import SidebarItem from "../Sidebar/SidebarItem";
-import { NodeToolbar, useReactFlow } from "@xyflow/react";
+import React from "react";
+import { useReactFlow } from "@xyflow/react";
+import useUndoRedo from "@/hooks/useUndoRedo";
+import { Algorithm } from "../edges/EditableEdge/constants";
 
 const colors = [
   "#CF4C2C",
@@ -12,28 +12,110 @@ const colors = [
   "#803DEC",
 ];
 
+const edgeVariants = [
+  {
+    algorithm: Algorithm.BezierCatmullRom,
+    label: "Bezier-Catmull-Rom",
+  },
+  {
+    algorithm: Algorithm.CatmullRom,
+    label: "Catmull-Rom",
+  },
+  {
+    algorithm: Algorithm.Linear,
+    label: "Linear",
+  },
+];
+
 type EdgeToolbarProps = {
   editingEdge: string | null;
 };
 
-function EdgeToolbar({ editingEdge }: EdgeToolbarProps) {
+function EdgeToolbar(props: EdgeToolbarProps) {
   const { setEdges, getEdge } = useReactFlow();
+  const { takeSnapshot } = useUndoRedo();
+  const edge = getEdge(`${props.editingEdge}`);
+  const activeShape = edge?.data?.algorithm;
+  const activeColor = edge?.data?.color;
+  const isAnimated = edge?.animated;
 
   const onColorChange = (color: string) => {
+    takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === editingEdge ? { ...edge, data: { color } } : edge
+        edge.id === props.editingEdge
+          ? { ...edge, style: { ...edge.style, stroke: color } }
+          : edge
       )
     );
-    console.log("color changed", color, editingEdge);
   };
 
-  const activeColor = editingEdge ? getEdge(editingEdge)?.data?.color : null;
+  const onShapeChange = (shape: Algorithm) => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? { ...edge, data: { ...edge.data, algorithm: shape } }
+          : edge
+      )
+    );
+  };
+
+  const onAnimatedChange = (animated: boolean) => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? {
+              ...edge,
+              animated: true,
+              style: {
+                ...edge.style,
+                animation: `circledraw 0${
+                  animated ? ".4" : ""
+                }s linear infinite`,
+              },
+            }
+          : edge
+      )
+    );
+  };
+
+  const onSolidDashChange = (solid: boolean) => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? {
+              ...edge,
+              animated: solid ? false : true,
+              style: {
+                ...edge.style,
+                animation: solid
+                  ? ""
+                  : `dashdraw 0${isAnimated ? ".2" : ""}s linear infinite`,
+              },
+            }
+          : edge
+      )
+    );
+  };
+
+  const onStyleChange = (style: string) => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? { ...edge, style: { ...edge.style, stroke: style } }
+          : edge
+      )
+    );
+  };
 
   return (
     <div
       className={`nodrag rounded-md flex flex-col bg-slate-800 ${
-        editingEdge ? "visible" : "hidden"
+        props.editingEdge ? "visible" : "hidden"
       }`}
     >
       <div className="flex flex-row gap-0.5">
@@ -46,18 +128,25 @@ function EdgeToolbar({ editingEdge }: EdgeToolbarProps) {
           />
         ))}
       </div>
-      {/* <div className="grid grid-cols-5">
-        {ShapeComponents &&
-          Object.keys(ShapeComponents).map((shape) => (
-            <button
-              key={shape}
-              onClick={() => onShapeChange(shape as ShapeType)}
-              className={`${shape === activeShape ? "active" : ""}`}
-            >
-              <SidebarItem type={shape as ShapeType} key={shape} />
-            </button>
-          ))}
-      </div> */}
+      <div className="grid grid-cols-3">
+        {edgeVariants.map((shape, index) => (
+          <button
+            key={index}
+            onClick={() => onShapeChange(shape.algorithm)}
+            className={`${shape === activeShape ? "active" : ""}`}
+          >
+            {shape.label}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1">
+        <button onClick={() => onAnimatedChange(true)}>Animated</button>
+        <button onClick={() => onAnimatedChange(false)}>Not Animated</button>
+      </div>
+      <div className="grid grid-cols-3">
+        <button onClick={() => onSolidDashChange(false)}>Dotted</button>
+        <button onClick={() => onSolidDashChange(true)}>Solid</button>
+      </div>
     </div>
   );
 }

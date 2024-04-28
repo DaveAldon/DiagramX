@@ -11,6 +11,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   Panel,
+  EdgeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./nodeStyles.css";
@@ -34,19 +35,21 @@ import { useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import ButtonEdge from "./CustomEdge/ButtonEdge";
+import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
+import { ConnectionLine } from "./edges/ConnectionLine";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
 };
 
-const edgeTypes = {
-  buttonedge: ButtonEdge,
+export const edgeTypes: EdgeTypes = {
+  "editable-edge": EditableEdge,
 };
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
-  type: "smoothstep",
-  markerEnd: { type: MarkerType.ArrowClosed },
+  type: "editable-edge",
+  //markerEnd: { type: MarkerType.ArrowClosed },
   style: { strokeWidth: 2 },
 };
 
@@ -81,7 +84,8 @@ const Flow = () => {
             className={controls.theme}
             onConnect={diagram.onConnect}
             onConnectStart={diagram.onConnectStart}
-            onConnectEnd={diagram.onConnectEnd}
+            //onConnectEnd={diagram.onConnectEnd}
+            connectionLineComponent={ConnectionLine}
             proOptions={{ hideAttribution: true }}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}

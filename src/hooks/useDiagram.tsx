@@ -19,9 +19,16 @@ import {
   useState,
 } from "react";
 import useUndoRedo from "./useUndoRedo";
+import { useAppStore } from "@/components/store";
+import {
+  Algorithm,
+  DEFAULT_ALGORITHM,
+} from "@/components/edges/EditableEdge/constants";
+import { ControlPointData } from "@/components/edges/EditableEdge";
 
 export const useDiagram = () => {
-  const { screenToFlowPosition, setNodes, setEdges, getNode } = useReactFlow();
+  const { screenToFlowPosition, setNodes, setEdges, getNode, getEdges } =
+    useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const connectingNodeId = useRef(null);
@@ -98,10 +105,30 @@ export const useDiagram = () => {
 
   const onConnect: OnConnect = useCallback(
     (connection) => {
-      connectingNodeId.current = null;
-      setEdges((edges) => addEdge(connection, edges));
+      takeSnapshot();
+      const { connectionLinePath } = useAppStore.getState();
+      const edge = {
+        ...connection,
+        id: `${Date.now()}-${connection.source}-${connection.target}`,
+        type: "editable-edge",
+        selected: true,
+        animated: true,
+        data: {
+          algorithm: DEFAULT_ALGORITHM,
+          points: connectionLinePath.map(
+            (point, i) =>
+              ({
+                ...point,
+                id: window.crypto.randomUUID(),
+                prev: i === 0 ? undefined : connectionLinePath[i - 1],
+                active: true,
+              } as ControlPointData)
+          ),
+        },
+      };
+      setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
     },
-    [setEdges]
+    [setEdges, takeSnapshot]
   );
 
   const onConnectStart = useCallback((_: any, { nodeId }: any) => {
@@ -142,13 +169,34 @@ export const useDiagram = () => {
           nodes.map((n) => ({ ...n, selected: false })).concat([{ ...newNode }])
         );
 
-        const newEdge = {
+        /* const newEdge = {
           id: `${connectingNodeId.current}-${newNode.id}`,
           source: connectingNodeId.current,
           target: newNode.id,
           animated: true,
+        }; */
+        const { connectionLinePath } = useAppStore.getState();
+
+        const edge = {
+          id: `${Date.now()}-${connectingNodeId.current}-${newNode.id}`,
+          source: connectingNodeId.current,
+          target: newNode.id,
+          type: "editable-edge",
+          selected: false,
+          data: {
+            algorithm: DEFAULT_ALGORITHM,
+            points: connectionLinePath.map(
+              (point, i) =>
+                ({
+                  ...point,
+                  id: window.crypto.randomUUID(),
+                  prev: i === 0 ? undefined : connectionLinePath[i - 1],
+                  active: true,
+                } as ControlPointData)
+            ),
+          },
         };
-        setEdges((edges) => edges.concat([newEdge]));
+        setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
         setSelectedNodeId(newNode.id);
       }
     },
