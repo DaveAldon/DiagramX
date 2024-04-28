@@ -1,5 +1,6 @@
 import { useHelperLines } from "@/hooks/useHelperLines";
 import {
+  Edge,
   OnConnect,
   OnEdgesDelete,
   OnNodeDrag,
@@ -22,6 +23,7 @@ import useUndoRedo from "./useUndoRedo";
 export const useDiagram = () => {
   const { screenToFlowPosition, setNodes, setEdges, getNode } = useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
+  const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const connectingNodeId = useRef(null);
   const {
     HelperLines,
@@ -153,6 +155,13 @@ export const useDiagram = () => {
     [screenToFlowPosition, setEdges, setNodes, takeSnapshot]
   );
 
+  const onEdgeClick = useCallback(
+    (_event: React.MouseEvent<Element, MouseEvent>, edge: Edge) => {
+      setEditingEdgeId(edge.id);
+    },
+    []
+  );
+
   const onNodeDragStart: OnNodeDrag = useCallback(() => {
     takeSnapshot();
   }, [takeSnapshot]);
@@ -189,5 +198,7 @@ export const useDiagram = () => {
     redo,
     canRedo,
     canUndo,
+    onEdgeClick,
+    editingEdgeId,
   };
 };

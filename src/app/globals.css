@@ -146,6 +146,7 @@ body,
 }
 
 .color-swatch {
+  flex-shrink: 0;
   width: 28px;
   height: 28px;
   border-radius: 50%;

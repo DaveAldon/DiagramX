@@ -33,9 +33,15 @@ const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
 import { useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
+import ButtonEdge from "./CustomEdge/ButtonEdge";
+import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
+};
+
+const edgeTypes = {
+  buttonedge: ButtonEdge,
 };
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
@@ -78,6 +84,7 @@ const Flow = () => {
             onConnectEnd={diagram.onConnectEnd}
             proOptions={{ hideAttribution: true }}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             defaultNodes={defaultNodes}
             defaultEdges={defaultEdges}
             defaultEdgeOptions={defaultEdgeOptions}
@@ -95,12 +102,16 @@ const Flow = () => {
             onSelectionDragStart={diagram.onSelectionDragStart}
             onNodesDelete={diagram.onNodesDelete}
             onEdgesDelete={diagram.onEdgesDelete}
+            onEdgeClick={diagram.onEdgeClick}
             elevateEdgesOnSelect
             elevateNodesOnSelect
           >
             <Background />
             <Panel position="top-left">
               <Sidebar />
+            </Panel>
+            <Panel position="top-center">
+              <EdgeToolbar editingEdge={diagram.editingEdgeId} />
             </Panel>
             <Panel
               className="cursor-pointer"

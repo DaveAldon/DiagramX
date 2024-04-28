@@ -1,6 +1,7 @@
-import { NodeToolbar } from "@xyflow/react";
+import React, { useState } from "react";
 import { ShapeComponents, ShapeType } from "../shape/types";
 import SidebarItem from "../Sidebar/SidebarItem";
+import { NodeToolbar, useReactFlow } from "@xyflow/react";
 
 const colors = [
   "#CF4C2C",
@@ -11,22 +12,31 @@ const colors = [
   "#803DEC",
 ];
 
-type ShapeNodeToolbarProps = {
-  activeColor: string;
-  activeShape: ShapeType;
-  onColorChange?: (color: string) => void;
-  onShapeChange?: (shape: ShapeType) => void;
+type EdgeToolbarProps = {
+  editingEdge: string | null;
 };
 
-function ShapeNodeToolbar({
-  onColorChange = () => false,
-  onShapeChange = () => false,
-  activeColor,
-  activeShape,
-}: ShapeNodeToolbarProps) {
+function EdgeToolbar({ editingEdge }: EdgeToolbarProps) {
+  const { setEdges, getEdge } = useReactFlow();
+
+  const onColorChange = (color: string) => {
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === editingEdge ? { ...edge, data: { color } } : edge
+      )
+    );
+    console.log("color changed", color, editingEdge);
+  };
+
+  const activeColor = editingEdge ? getEdge(editingEdge)?.data?.color : null;
+
   return (
-    <NodeToolbar className="nodrag flex flex-col" offset={32}>
-      <div className="flex flex-row gap-2">
+    <div
+      className={`nodrag rounded-md flex flex-col bg-slate-800 ${
+        editingEdge ? "visible" : "hidden"
+      }`}
+    >
+      <div className="flex flex-row gap-0.5">
         {colors.map((color) => (
           <button
             key={color}
@@ -36,7 +46,7 @@ function ShapeNodeToolbar({
           />
         ))}
       </div>
-      <div className="grid grid-cols-5">
+      {/* <div className="grid grid-cols-5">
         {ShapeComponents &&
           Object.keys(ShapeComponents).map((shape) => (
             <button
@@ -47,9 +57,9 @@ function ShapeNodeToolbar({
               <SidebarItem type={shape as ShapeType} key={shape} />
             </button>
           ))}
-      </div>
-    </NodeToolbar>
+      </div> */}
+    </div>
   );
 }
 
-export default ShapeNodeToolbar;
+export default EdgeToolbar;

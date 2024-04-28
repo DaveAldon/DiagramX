@@ -121,6 +121,7 @@ export const defaultEdges: Edge[] = [
     target: "2",
     sourceHandle: "bottom",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "2->3",
@@ -128,6 +129,7 @@ export const defaultEdges: Edge[] = [
     target: "3",
     sourceHandle: "left",
     targetHandle: "right",
+    type: "buttonedge",
   },
   {
     id: "2->4",
@@ -135,6 +137,7 @@ export const defaultEdges: Edge[] = [
     target: "4",
     sourceHandle: "right",
     targetHandle: "left",
+    type: "buttonedge",
   },
   {
     id: "4->5",
@@ -142,6 +145,7 @@ export const defaultEdges: Edge[] = [
     target: "5",
     sourceHandle: "right",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "3->6",
@@ -149,6 +153,7 @@ export const defaultEdges: Edge[] = [
     target: "6",
     sourceHandle: "bottom",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "6->7",
@@ -156,6 +161,7 @@ export const defaultEdges: Edge[] = [
     target: "7",
     sourceHandle: "right",
     targetHandle: "left",
+    type: "buttonedge",
   },
   {
     id: "4->7",
@@ -163,6 +169,7 @@ export const defaultEdges: Edge[] = [
     target: "7",
     sourceHandle: "bottom",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "7->8",
@@ -170,6 +177,7 @@ export const defaultEdges: Edge[] = [
     target: "8",
     sourceHandle: "bottom",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "5->9",
@@ -177,6 +185,7 @@ export const defaultEdges: Edge[] = [
     target: "9",
     sourceHandle: "left",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "6->10",
@@ -184,6 +193,7 @@ export const defaultEdges: Edge[] = [
     target: "10",
     sourceHandle: "bottom",
     targetHandle: "top",
+    type: "buttonedge",
   },
   {
     id: "10->8",
@@ -191,5 +201,6 @@ export const defaultEdges: Edge[] = [
     target: "8",
     sourceHandle: "right",
     targetHandle: "left",
+    type: "buttonedge",
   },
 ];
