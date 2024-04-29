@@ -20,10 +20,7 @@ import {
 } from "react";
 import useUndoRedo from "./useUndoRedo";
 import { useAppStore } from "@/components/store";
-import {
-  Algorithm,
-  DEFAULT_ALGORITHM,
-} from "@/components/edges/EditableEdge/constants";
+import { DEFAULT_ALGORITHM } from "@/components/edges/EditableEdge/constants";
 import { ControlPointData } from "@/components/edges/EditableEdge";
 
 export const useDiagram = () => {
@@ -226,6 +223,11 @@ export const useDiagram = () => {
     takeSnapshot();
   }, [takeSnapshot]);
 
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(undefined);
+    setEditingEdgeId(null);
+  }, []);
+
   return {
     onDragOver,
     onDrop,
@@ -248,5 +250,6 @@ export const useDiagram = () => {
     canUndo,
     onEdgeClick,
     editingEdgeId,
+    onPaneClick,
   };
 };

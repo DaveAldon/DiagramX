@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   BaseEdge,
   useReactFlow,
@@ -56,7 +56,7 @@ export function EditableEdge({
   const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
   const targetOrigin = { x: targetX, y: targetY } as XYPosition;
   const color = style?.stroke || "#FFFFFF80";
-  const direction = (data.direction as string) || "normal";
+  const direction = (style?.animationDirection as string) || "normal";
   const { setEdges } = useReactFlow();
   const shouldShowPoints = useStore((store) => {
     const sourceNode = store.nodeLookup.get(source as string)!;
@@ -127,20 +127,22 @@ export function EditableEdge({
           />
         ))}
 
-      <circle
-        style={{ filter: `drop-shadow(0px 0px 2px ${color}` }}
-        r="4"
-        fill={`${color}`}
-        className="circle"
-      >
-        <animateMotion
-          dur={`${getRandomDuration(4.5, 6)}s`}
-          repeatCount="indefinite"
-          path={path}
-          keyPoints={direction === "normal" ? undefined : "1;0"}
-          keyTimes={direction === "normal" ? undefined : "0;1"}
-        />
-      </circle>
+      {data.showMovingBall ? (
+        <circle
+          style={{ filter: `drop-shadow(0px 0px 2px ${color}` }}
+          r="4"
+          fill={`${color}`}
+          className="circle"
+        >
+          <animateMotion
+            dur={`${getRandomDuration(4.5, 6)}s`}
+            repeatCount="indefinite"
+            path={path}
+            keyPoints={direction === "normal" ? undefined : "1;0"}
+            keyTimes={direction === "normal" ? undefined : "0;1"}
+          />
+        </circle>
+      ) : null}
     </>
   );
 }

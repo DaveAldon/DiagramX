@@ -87,6 +87,7 @@ const Flow = () => {
             //onConnectEnd={diagram.onConnectEnd}
             connectionLineComponent={ConnectionLine}
             proOptions={{ hideAttribution: true }}
+            onPaneClick={diagram.onPaneClick}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             defaultNodes={defaultNodes}
@@ -114,9 +115,11 @@ const Flow = () => {
             <Panel position="top-left">
               <Sidebar />
             </Panel>
-            <Panel position="top-center">
-              <EdgeToolbar editingEdge={diagram.editingEdgeId} />
-            </Panel>
+            {diagram.editingEdgeId ? (
+              <Panel position="top-center">
+                <EdgeToolbar editingEdge={diagram.editingEdgeId} />
+              </Panel>
+            ) : null}
             <Panel
               className="cursor-pointer"
               position="top-right"

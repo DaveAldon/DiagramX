@@ -22,6 +22,20 @@ const colors = [
   "#FFFFFF80",
 ];
 
+enum Animation {
+  AnimatedDotted = "animatedDotted",
+  Dotted = "dotted",
+  Solid = "solid",
+}
+enum ShowMovingBall {
+  Show = "show",
+  Hide = "hide",
+}
+enum AnimationDirection {
+  Normal = "normal",
+  Reverse = "reverse",
+}
+
 const edgeVariants = [
   {
     algorithm: Algorithm.BezierCatmullRom,
@@ -47,7 +61,6 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   const edge = getEdge(`${props.editingEdge}`);
   const activeShape = edge?.data?.algorithm;
   const activeColor = edge?.style?.stroke;
-  const isAnimated = edge?.animated;
 
   const onColorChange = (color: string) => {
     takeSnapshot();
@@ -71,7 +84,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
     );
   };
 
-  const onAnimatedChange = (animated: boolean) => {
+  const setAnimatedDotted = () => {
     takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
@@ -81,42 +94,73 @@ function EdgeToolbar(props: EdgeToolbarProps) {
               animated: true,
               style: {
                 ...edge.style,
-                animation: `circledraw 0${
-                  animated ? ".4" : ""
-                }s linear infinite`,
+                animation: `dashdraw 0.4s linear infinite`,
               },
+              data: { ...edge.data, animation: Animation.AnimatedDotted },
             }
           : edge
       )
     );
   };
 
-  const onSolidDashChange = (solid: boolean) => {
+  const setDotted = () => {
     takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
           ? {
               ...edge,
-              animated: solid ? false : true,
+              animated: true,
               style: {
                 ...edge.style,
-                animation: solid
-                  ? ""
-                  : `dashdraw 0${isAnimated ? ".2" : ""}s linear infinite`,
+                animation: `dashdraw 0s linear infinite`,
               },
+              data: { ...edge.data, animation: Animation.Dotted },
             }
           : edge
       )
     );
   };
 
-  const onStyleChange = (style: string) => {
+  const setSolid = () => {
     takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
-          ? { ...edge, style: { ...edge.style, stroke: style } }
+          ? {
+              ...edge,
+              animated: false,
+              style: {
+                ...edge.style,
+              },
+              data: { ...edge.data, animation: Animation.Solid },
+            }
+          : edge
+      )
+    );
+  };
+
+  const changeAnimationDirection = (direction: "normal" | "reverse") => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? {
+              ...edge,
+              style: { ...edge.style, animationDirection: direction },
+              data: { ...edge.data, animationDirection: direction },
+            }
+          : edge
+      )
+    );
+  };
+
+  const onMovingBallChange = (isMoving: boolean) => {
+    takeSnapshot();
+    setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === props.editingEdge
+          ? { ...edge, data: { ...edge.data, showMovingBall: isMoving } }
           : edge
       )
     );
@@ -128,63 +172,128 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         props.editingEdge ? "visible" : "hidden"
       }`}
     >
-      <div className="flex flex-row gap-0.5">
-        {colors.map((color) => (
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-0.5">
+          {colors.map((color) => (
+            <button
+              key={color}
+              style={{ backgroundColor: color }}
+              onClick={() => onColorChange(color)}
+              className={`color-swatch flex justify-center items-center ${
+                color === activeColor ? "border" : ""
+              }`}
+            >
+              {color === activeColor ? <Crosshair /> : ""}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
           <button
-            key={color}
-            style={{ backgroundColor: color }}
-            onClick={() => onColorChange(color)}
-            className={`color-swatch flex justify-center items-center ${
-              color === activeColor ? "border" : ""
+            onClick={() => onShapeChange(Algorithm.Linear)}
+            className={`flex justify-center items-center ${
+              Algorithm.Linear === activeShape
+                ? " border-white border rounded-md"
+                : "border border-transparent"
             }`}
           >
-            {color === activeColor ? <Crosshair /> : ""}
+            <AnalyticsOutline color={"white"} />
           </button>
-        ))}
+          <button
+            onClick={() => onShapeChange(Algorithm.BezierCatmullRom)}
+            className={`flex justify-center items-center ${
+              Algorithm.BezierCatmullRom === activeShape
+                ? "border-white border rounded-md"
+                : "border border-transparent"
+            }`}
+          >
+            <TbVectorSpline color={"white"} />
+          </button>
+          <button
+            onClick={() => onShapeChange(Algorithm.CatmullRom)}
+            className={`flex justify-center items-center ${
+              Algorithm.CatmullRom === activeShape
+                ? "border-white border rounded-md"
+                : "border border-transparent"
+            }`}
+          >
+            <TfiVector color={"white"} />
+          </button>
+        </div>
       </div>
-      <div className="grid grid-cols-3">
+
+      <div className="grid grid-cols-2 justify-center items-center">
         <button
-          onClick={() => onShapeChange(Algorithm.Linear)}
           className={`flex justify-center items-center ${
-            Algorithm.Linear === activeShape
+            edge?.data?.showMovingBall === true
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
+          onClick={() => onMovingBallChange(true)}
         >
-          <AnalyticsOutline color={"white"} />
+          Show Ball
         </button>
         <button
-          onClick={() => onShapeChange(Algorithm.BezierCatmullRom)}
           className={`flex justify-center items-center ${
-            Algorithm.BezierCatmullRom === activeShape
-              ? "border-white border rounded-md"
+            edge?.data?.animationDirection === AnimationDirection.Normal
+              ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
+          onClick={() => changeAnimationDirection("normal")}
         >
-          <TbVectorSpline color={"white"} />
+          Forward
         </button>
         <button
-          onClick={() => onShapeChange(Algorithm.CatmullRom)}
           className={`flex justify-center items-center ${
-            Algorithm.CatmullRom === activeShape
-              ? "border-white border rounded-md"
+            edge?.data?.showMovingBall === false
+              ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
+          onClick={() => onMovingBallChange(false)}
         >
-          <TfiVector color={"white"} />
+          Hide Ball
+        </button>
+        <button
+          className={`flex justify-center items-center ${
+            edge?.data?.animationDirection === AnimationDirection.Reverse
+              ? " border-white border rounded-md"
+              : "border border-transparent"
+          }`}
+          onClick={() => changeAnimationDirection("reverse")}
+        >
+          Reverse
         </button>
       </div>
-      <div className="grid grid-cols-1">
-        <button onClick={() => onAnimatedChange(true)}>
+      <div className="grid grid-cols-3 justify-between">
+        <button
+          className={`flex justify-center items-center ${
+            edge?.data?.animation === Animation.AnimatedDotted
+              ? " border-white border rounded-md"
+              : "border border-transparent"
+          }`}
+          onClick={() => setAnimatedDotted()}
+        >
           <MovingDotsIcon />
         </button>
-        <button onClick={() => onAnimatedChange(false)}>Not Animated</button>
-      </div>
-      <div className="grid grid-cols-3">
-        <button onClick={() => onSolidDashChange(false)}>
+        <button
+          className={`flex justify-center items-center ${
+            edge?.data?.animation === Animation.Dotted
+              ? " border-white border rounded-md"
+              : "border border-transparent"
+          }`}
+          onClick={() => {
+            setDotted();
+          }}
+        >
           <RxBorderDotted color="white" size={30} />
         </button>
-        <button onClick={() => onSolidDashChange(true)}>
+        <button
+          className={`flex justify-center items-center ${
+            edge?.data?.animation === Animation.Solid
+              ? " border-white border rounded-md"
+              : "border border-transparent"
+          }`}
+          onClick={() => setSolid()}
+        >
           <IoRemoveOutline color="white" size={30} />
         </button>
       </div>
