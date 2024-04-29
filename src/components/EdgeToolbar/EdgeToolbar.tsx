@@ -27,10 +27,6 @@ enum Animation {
   Dotted = "dotted",
   Solid = "solid",
 }
-enum ShowMovingBall {
-  Show = "show",
-  Hide = "hide",
-}
 enum AnimationDirection {
   Normal = "normal",
   Reverse = "reverse",
@@ -59,8 +55,11 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   const { setEdges, getEdge } = useReactFlow();
   const { takeSnapshot } = useUndoRedo();
   const edge = getEdge(`${props.editingEdge}`);
-  const activeShape = edge?.data?.algorithm;
-  const activeColor = edge?.style?.stroke;
+  const activeShape = edge?.data?.algorithm || Algorithm.BezierCatmullRom;
+  const activeColor = edge?.style?.stroke || "#FFFFFF80";
+  const activeAnimation = edge?.data?.animation || Animation.Solid;
+  const activeAnimationDirection = edge?.data?.animationDirection || "normal";
+  const activeShowMovingBall = edge?.data?.showMovingBall || false;
 
   const onColorChange = (color: string) => {
     takeSnapshot();
@@ -224,7 +223,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
       <div className="grid grid-cols-2 justify-center items-center">
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.showMovingBall === true
+            activeShowMovingBall === true
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -234,7 +233,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         </button>
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.animationDirection === AnimationDirection.Normal
+            activeAnimationDirection === AnimationDirection.Normal
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -244,7 +243,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         </button>
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.showMovingBall === false
+            activeShowMovingBall === false
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -254,7 +253,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         </button>
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.animationDirection === AnimationDirection.Reverse
+            activeAnimationDirection === AnimationDirection.Reverse
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -266,7 +265,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
       <div className="grid grid-cols-3 justify-between">
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.animation === Animation.AnimatedDotted
+            activeAnimation === Animation.AnimatedDotted
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -276,7 +275,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         </button>
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.animation === Animation.Dotted
+            activeAnimation === Animation.Dotted
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
@@ -288,7 +287,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         </button>
         <button
           className={`flex justify-center items-center ${
-            edge?.data?.animation === Animation.Solid
+            activeAnimation === Animation.Solid
               ? " border-white border rounded-md"
               : "border border-transparent"
           }`}
