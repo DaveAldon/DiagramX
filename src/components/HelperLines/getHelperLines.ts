@@ -28,14 +28,17 @@ export function getHelperLines(
   if (!nodeA || !change.position) {
     return defaultResult;
   }
+  if (!nodeA.measured) {
+    return defaultResult;
+  }
 
   const nodeABounds = {
     left: change.position.x,
-    right: change.position.x + (nodeA.width ?? 0),
+    right: change.position.x + (nodeA.measured.width ?? 0),
     top: change.position.y,
-    bottom: change.position.y + (nodeA.height ?? 0),
-    width: nodeA.width ?? 0,
-    height: nodeA.height ?? 0,
+    bottom: change.position.y + (nodeA.measured.height ?? 0),
+    width: nodeA.measured.width ?? 0,
+    height: nodeA.measured.height ?? 0,
   };
 
   let horizontalDistance = distance;
@@ -44,13 +47,16 @@ export function getHelperLines(
   return nodes
     .filter((node) => node.id !== nodeA.id)
     .reduce<GetHelperLinesResult>((result, nodeB) => {
+      if (!nodeB.position || !nodeB.measured) {
+        return result;
+      }
       const nodeBBounds = {
         left: nodeB.position.x,
-        right: nodeB.position.x + (nodeB.width ?? 0),
+        right: nodeB.position.x + (nodeB.measured.width ?? 0),
         top: nodeB.position.y,
-        bottom: nodeB.position.y + (nodeB.height ?? 0),
-        width: nodeB.width ?? 0,
-        height: nodeB.height ?? 0,
+        bottom: nodeB.position.y + (nodeB.measured.height ?? 0),
+        width: nodeB.measured.width ?? 0,
+        height: nodeB.measured.height ?? 0,
       };
 
       //  |‾‾‾‾‾‾‾‾‾‾‾|

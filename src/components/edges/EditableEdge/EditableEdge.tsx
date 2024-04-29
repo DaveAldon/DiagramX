@@ -134,7 +134,7 @@ export function EditableEdge({
         className="circle"
       >
         <animateMotion
-          dur="6s"
+          dur={`${getRandomDuration(4.5, 6)}s`}
           repeatCount="indefinite"
           path={path}
           keyPoints={direction === "normal" ? undefined : "1;0"}
@@ -143,6 +143,10 @@ export function EditableEdge({
       </circle>
     </>
   );
+}
+
+function getRandomDuration(min: number, max: number) {
+  return Math.random() * (max - min) + min;
 }
 
 const isEditableEdge = (edge: Edge): edge is Edge<EditableEdgeData> =>
