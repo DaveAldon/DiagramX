@@ -107,8 +107,10 @@ export function EditableEdge({
         id={id}
         path={path}
         {...delegated}
-        markerStart={markerStart}
-        markerEnd={markerEnd}
+        /* markerStart={markerStart}
+        markerEnd={markerEnd} */
+        markerStart={`url(#marker-${id})`}
+        markerEnd={`url(#marker-${id})`}
         style={{
           ...style,
           strokeWidth: 2,

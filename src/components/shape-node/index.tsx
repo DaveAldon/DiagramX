@@ -14,6 +14,7 @@ import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
 import { useEffect } from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
+import { hext } from "@davealdon/hext";
 
 export type ShapeNodeData = {
   type: ShapeType;
@@ -105,9 +106,9 @@ const ShapeNode = ({ id, selected, data }: any) => {
         width={width}
         height={height}
         fill={color}
-        strokeWidth={2}
+        strokeWidth={1}
         stroke={color}
-        fillOpacity={0.8}
+        fillOpacity={0.2}
       />
       <Handle
         style={handleStyle}

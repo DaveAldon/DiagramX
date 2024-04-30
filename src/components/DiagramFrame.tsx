@@ -38,6 +38,7 @@ import ButtonEdge from "./CustomEdge/ButtonEdge";
 import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 import { ConnectionLine } from "./edges/ConnectionLine";
+import { MarkerDefinition } from "./edges/MarkerDefinition";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -49,13 +50,14 @@ export const edgeTypes: EdgeTypes = {
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
   type: "editable-edge",
-  //markerEnd: { type: MarkerType.ArrowClosed },
+  /* markerStart: "some-arrow",
+  markerEnd: "some-arrow", */
   style: { strokeWidth: 2 },
 };
 
 const Flow = () => {
   const diagram = useDiagram();
-  const { getSnapshotJson } = useUndoRedo();
+  const { getSnapshotJson, takeSnapshot } = useUndoRedo();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const controls = useControls({
     theme: { options: ["dark", "light"] },
@@ -106,6 +108,7 @@ const Flow = () => {
             onNodeDragStart={diagram.onNodeDragStart}
             onSelectionDragStart={diagram.onSelectionDragStart}
             onNodesDelete={diagram.onNodesDelete}
+            onNodeClick={diagram.onNodeClick}
             onEdgesDelete={diagram.onEdgesDelete}
             onEdgeClick={diagram.onEdgeClick}
             elevateEdgesOnSelect
@@ -117,7 +120,10 @@ const Flow = () => {
             </Panel>
             {diagram.editingEdgeId ? (
               <Panel position="top-center">
-                <EdgeToolbar editingEdge={diagram.editingEdgeId} />
+                <EdgeToolbar
+                  takeSnapshot={takeSnapshot}
+                  editingEdge={diagram.editingEdgeId}
+                />
               </Panel>
             ) : null}
             <Panel
@@ -140,6 +146,13 @@ const Flow = () => {
               horizontal={diagram.helperLineHorizontal}
               vertical={diagram.helperLineVertical}
             />
+            {diagram.edges.map((edge, index) => (
+              <MarkerDefinition
+                key={index}
+                id={`marker-${edge.id}`}
+                color={`${edge.style?.stroke}`}
+              />
+            ))}
           </ReactFlow>
         </ResizablePanel>
         <PanelResizeHandle

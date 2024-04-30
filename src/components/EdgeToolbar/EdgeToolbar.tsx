@@ -49,11 +49,11 @@ const edgeVariants = [
 
 type EdgeToolbarProps = {
   editingEdge: string | null;
+  takeSnapshot: () => void;
 };
 
 function EdgeToolbar(props: EdgeToolbarProps) {
   const { setEdges, getEdge } = useReactFlow();
-  const { takeSnapshot } = useUndoRedo();
   const edge = getEdge(`${props.editingEdge}`);
   const activeShape = edge?.data?.algorithm || Algorithm.BezierCatmullRom;
   const activeColor = edge?.style?.stroke || "#FFFFFF80";
@@ -62,7 +62,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   const activeShowMovingBall = edge?.data?.showMovingBall || false;
 
   const onColorChange = (color: string) => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -73,7 +73,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const onShapeChange = (shape: Algorithm) => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -84,7 +84,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const setAnimatedDotted = () => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -103,7 +103,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const setDotted = () => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -122,7 +122,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const setSolid = () => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -140,7 +140,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const changeAnimationDirection = (direction: "normal" | "reverse") => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge
@@ -155,7 +155,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   };
 
   const onMovingBallChange = (isMoving: boolean) => {
-    takeSnapshot();
+    props.takeSnapshot();
     setEdges((edges) =>
       edges.map((edge) =>
         edge.id === props.editingEdge

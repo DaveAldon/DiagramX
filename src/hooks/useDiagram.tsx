@@ -1,6 +1,7 @@
 import { useHelperLines } from "@/hooks/useHelperLines";
 import {
   Edge,
+  NodeMouseHandler,
   OnConnect,
   OnEdgesDelete,
   OnNodeDrag,
@@ -228,6 +229,10 @@ export const useDiagram = () => {
     setEditingEdgeId(null);
   }, []);
 
+  const onNodeClick = useCallback((_event: any) => {
+    setEditingEdgeId(null);
+  }, []);
+
   return {
     onDragOver,
     onDrop,
@@ -251,5 +256,7 @@ export const useDiagram = () => {
     onEdgeClick,
     editingEdgeId,
     onPaneClick,
+    onNodeClick,
+    edges: getEdges(),
   };
 };

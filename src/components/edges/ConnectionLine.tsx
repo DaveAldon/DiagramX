@@ -76,7 +76,7 @@ export function ConnectionLine({
         d={path}
         markerStart={MarkerType.ArrowClosed}
         markerWidth={25}
-        markerEnd={MarkerType.ArrowClosed}
+        markerEnd={MarkerType.Arrow}
       />
     </g>
   );
