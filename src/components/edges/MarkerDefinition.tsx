@@ -8,27 +8,29 @@ interface MarkerProps {
   fillColor?: string;
 }
 
-const Marker = (props: MarkerProps) => (
-  <marker
-    className={props.className || "react-flow__arrowhead"}
-    id={props.id}
-    markerWidth="15"
-    markerHeight="15"
-    viewBox="-10 -10 20 20"
-    orient="auto"
-    markerUnits="userSpaceOnUse"
-    refX="0"
-    refY="0"
-  >
-    <circle
-      cx="0"
-      cy="0"
-      r="5"
-      stroke={props.strokeColor}
-      fill={props.fillColor}
-    />
-  </marker>
-);
+const Marker = (props: MarkerProps) => {
+  return (
+    <marker
+      className={props.className || "react-flow__arrowhead"}
+      id={props.id}
+      markerWidth="15"
+      markerHeight="15"
+      viewBox="-10 -10 20 20"
+      orient="auto"
+      markerUnits="userSpaceOnUse"
+      refX="0"
+      refY="0"
+    >
+      <circle
+        cx="0"
+        cy="0"
+        r="5"
+        stroke={props.strokeColor}
+        fill={props.fillColor}
+      />
+    </marker>
+  );
+};
 
 interface MarkerDefinitionsProps {
   id: string;

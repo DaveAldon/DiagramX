@@ -10,7 +10,7 @@ import {
   SelectionDragHandler,
   addEdge,
   applyNodeChanges,
-  useReactFlow,
+  useReactFlow as useReactFlowHook,
 } from "@xyflow/react";
 import {
   DragEventHandler,
@@ -23,12 +23,21 @@ import useUndoRedo from "./useUndoRedo";
 import { useAppStore } from "@/components/store";
 import { DEFAULT_ALGORITHM } from "@/components/edges/EditableEdge/constants";
 import { ControlPointData } from "@/components/edges/EditableEdge";
+import { MarkerDefinition } from "@/components/edges/MarkerDefinition";
 
 export const useDiagram = () => {
-  const { screenToFlowPosition, setNodes, setEdges, getNode, getEdges } =
-    useReactFlow();
+  const useReactFlow = useReactFlowHook;
+  const {
+    screenToFlowPosition,
+    setNodes,
+    setEdges,
+    getNode,
+    getEdges,
+    getEdge,
+  } = useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
+  const [internalEdges, setInternalEdges] = useState<Edge[]>(getEdges());
   const connectingNodeId = useRef(null);
   const {
     HelperLines,
@@ -124,6 +133,9 @@ export const useDiagram = () => {
           ),
         },
       };
+      setInternalEdges((edges) =>
+        addEdge({ ...edge, type: "editable-edge" }, edges)
+      );
       setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
     },
     [setEdges, takeSnapshot]
@@ -194,6 +206,9 @@ export const useDiagram = () => {
             ),
           },
         };
+        setInternalEdges((edges) =>
+          addEdge({ ...edge, type: "editable-edge" }, edges)
+        );
         setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
         setSelectedNodeId(newNode.id);
       }
@@ -233,6 +248,22 @@ export const useDiagram = () => {
     setEditingEdgeId(null);
   }, []);
 
+  useEffect(() => {
+    setInternalEdges(getEdges());
+  }, [getEdges]);
+
+  const Markers = () => {
+    return getEdges().map((edge, index) => {
+      return (
+        <MarkerDefinition
+          key={index}
+          id={`marker-${edge.id}`}
+          color={`${edge.style?.stroke}`}
+        />
+      );
+    });
+  };
+
   return {
     onDragOver,
     onDrop,
@@ -257,6 +288,11 @@ export const useDiagram = () => {
     editingEdgeId,
     onPaneClick,
     onNodeClick,
-    edges: getEdges(),
+    internalEdges,
+    setInternalEdges,
+    useReactFlow,
+    Markers,
+    getEdge,
+    setEdges,
   };
 };

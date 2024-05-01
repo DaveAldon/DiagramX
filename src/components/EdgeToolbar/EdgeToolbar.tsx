@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useReactFlow } from "@xyflow/react";
 import useUndoRedo from "@/hooks/useUndoRedo";
 import { Algorithm } from "../edges/EditableEdge/constants";
@@ -11,6 +11,7 @@ import { TfiVector } from "react-icons/tfi";
 import { Crosshair } from "react-feather";
 import { RxBorderDotted } from "react-icons/rx";
 import { IoRemoveOutline } from "react-icons/io5";
+import { useDiagram } from "@/hooks/useDiagram";
 
 const colors = [
   "#CF4C2C",
@@ -48,13 +49,14 @@ const edgeVariants = [
 ];
 
 type EdgeToolbarProps = {
-  editingEdge: string | null;
   takeSnapshot: () => void;
+  useDiagram: ReturnType<typeof useDiagram>;
 };
 
 function EdgeToolbar(props: EdgeToolbarProps) {
-  const { setEdges, getEdge } = useReactFlow();
-  const edge = getEdge(`${props.editingEdge}`);
+  const diagram = props.useDiagram;
+  const editingEdgeId = diagram.editingEdgeId;
+  const edge = diagram.getEdge(`${editingEdgeId}`);
   const activeShape = edge?.data?.algorithm || Algorithm.BezierCatmullRom;
   const activeColor = edge?.style?.stroke || "#FFFFFF80";
   const activeAnimation = edge?.data?.animation || Animation.Solid;
@@ -63,9 +65,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const onColorChange = (color: string) => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? { ...edge, style: { ...edge.style, stroke: color } }
           : edge
       )
@@ -74,9 +76,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const onShapeChange = (shape: Algorithm) => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? { ...edge, data: { ...edge.data, algorithm: shape } }
           : edge
       )
@@ -85,9 +87,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const setAnimatedDotted = () => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? {
               ...edge,
               animated: true,
@@ -104,9 +106,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const setDotted = () => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? {
               ...edge,
               animated: true,
@@ -123,9 +125,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const setSolid = () => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? {
               ...edge,
               animated: false,
@@ -141,9 +143,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const changeAnimationDirection = (direction: "normal" | "reverse") => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? {
               ...edge,
               style: { ...edge.style, animationDirection: direction },
@@ -156,9 +158,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   const onMovingBallChange = (isMoving: boolean) => {
     props.takeSnapshot();
-    setEdges((edges) =>
+    diagram.setEdges((edges) =>
       edges.map((edge) =>
-        edge.id === props.editingEdge
+        edge.id === editingEdgeId
           ? { ...edge, data: { ...edge.data, showMovingBall: isMoving } }
           : edge
       )
@@ -168,7 +170,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   return (
     <div
       className={`nodrag rounded-md flex flex-col bg-slate-800 gap-1 ${
-        props.editingEdge ? "visible" : "hidden"
+        editingEdgeId ? "visible" : "hidden"
       }`}
     >
       <div className="flex flex-row gap-4">

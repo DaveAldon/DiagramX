@@ -5,7 +5,6 @@ import {
   ControlButton,
   Controls,
   DefaultEdgeOptions,
-  MarkerType,
   MiniMap,
   NodeTypes,
   ReactFlow,
@@ -34,11 +33,9 @@ const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
 import { useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
-import ButtonEdge from "./CustomEdge/ButtonEdge";
 import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 import { ConnectionLine } from "./edges/ConnectionLine";
-import { MarkerDefinition } from "./edges/MarkerDefinition";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -111,6 +108,7 @@ const Flow = () => {
             onNodeClick={diagram.onNodeClick}
             onEdgesDelete={diagram.onEdgesDelete}
             onEdgeClick={diagram.onEdgeClick}
+            //onEdgesChange={diagram.onEdgesChange}
             elevateEdgesOnSelect
             elevateNodesOnSelect
           >
@@ -120,10 +118,7 @@ const Flow = () => {
             </Panel>
             {diagram.editingEdgeId ? (
               <Panel position="top-center">
-                <EdgeToolbar
-                  takeSnapshot={takeSnapshot}
-                  editingEdge={diagram.editingEdgeId}
-                />
+                <EdgeToolbar takeSnapshot={takeSnapshot} useDiagram={diagram} />
               </Panel>
             ) : null}
             <Panel
@@ -146,13 +141,7 @@ const Flow = () => {
               horizontal={diagram.helperLineHorizontal}
               vertical={diagram.helperLineVertical}
             />
-            {diagram.edges.map((edge, index) => (
-              <MarkerDefinition
-                key={index}
-                id={`marker-${edge.id}`}
-                color={`${edge.style?.stroke}`}
-              />
-            ))}
+            <diagram.Markers />
           </ReactFlow>
         </ResizablePanel>
         <PanelResizeHandle
