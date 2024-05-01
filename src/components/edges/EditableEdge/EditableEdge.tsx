@@ -1,8 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import {
   BaseEdge,
   useReactFlow,
-  useStore,
   type Edge,
   type EdgeProps,
   type XYPosition,
@@ -10,6 +9,7 @@ import {
 import { ControlPoint, type ControlPointData } from "./ControlPoint";
 import { getPath, getControlPoints } from "./path";
 import { Algorithm } from "./constants";
+import { useDiagram } from "@/hooks/useDiagram";
 
 const useIdsForInactiveControlPoints = (points: ControlPointData[]) => {
   const prevIds = useRef<string[]>([]);
@@ -36,6 +36,9 @@ export type EditableEdgeData = {
   points: ControlPointData[];
 };
 
+interface EditableEdgeProps extends EdgeProps {
+  useDiagram: ReturnType<typeof useDiagram>;
+}
 export function EditableEdge({
   id,
   selected,
@@ -51,19 +54,37 @@ export function EditableEdge({
   markerStart,
   style,
   data = { points: [] },
+  useDiagram,
   ...delegated
-}: EdgeProps) {
+}: EditableEdgeProps) {
+  const { setEdges: setEdges2, useStore } = useDiagram;
+  const { setEdges } = useReactFlow();
   const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
   const targetOrigin = { x: targetX, y: targetY } as XYPosition;
   const color = style?.stroke || "#FFFFFF80";
   const direction = (style?.animationDirection as string) || "normal";
-  const { setEdges } = useReactFlow();
   const shouldShowPoints = useStore((store) => {
     const sourceNode = store.nodeLookup.get(source as string)!;
     const targetNode = store.nodeLookup.get(target as string)!;
 
     return selected || sourceNode.selected || targetNode.selected;
   });
+
+  const setControlPointsGlobal = useCallback(() => {
+    (update: (points: ControlPointData[]) => ControlPointData[]) => {
+      setEdges2((edges) =>
+        edges.map((e) => {
+          if (e.id !== id) return e;
+          if (!isEditableEdge(e)) return e;
+
+          const points = e.data?.points ?? [];
+          const data = { ...e.data, points: update(points) };
+
+          return { ...e, data };
+        })
+      );
+    };
+  }, [id, setEdges2]);
 
   const setControlPoints = useCallback(
     (update: (points: ControlPointData[]) => ControlPointData[]) => {
@@ -125,6 +146,7 @@ export function EditableEdge({
             index={index}
             setControlPoints={setControlPoints}
             color={`${color}`}
+            setControlPointsGlobal={setControlPointsGlobal}
             {...point}
           />
         ))}

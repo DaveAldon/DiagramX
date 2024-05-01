@@ -11,6 +11,7 @@ import {
   ReactFlowProvider,
   Panel,
   EdgeTypes,
+  EdgeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./nodeStyles.css";
@@ -41,10 +42,6 @@ const nodeTypes: NodeTypes = {
   shape: ShapeNode,
 };
 
-export const edgeTypes: EdgeTypes = {
-  "editable-edge": EditableEdge,
-};
-
 const defaultEdgeOptions: DefaultEdgeOptions = {
   type: "editable-edge",
   /* markerStart: "some-arrow",
@@ -72,6 +69,13 @@ const Flow = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const EditableEdgeWrapper = (props: EdgeProps) => {
+    return <EditableEdge {...props} useDiagram={diagram} />;
+  };
+  const edgeTypes: EdgeTypes = {
+    "editable-edge": EditableEdgeWrapper,
   };
 
   return (

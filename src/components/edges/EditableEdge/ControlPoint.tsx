@@ -16,6 +16,9 @@ export type ControlPointProps = {
   y: number;
   color: string;
   active?: boolean;
+  setControlPointsGlobal: (
+    update: (points: ControlPointData[]) => ControlPointData[]
+  ) => void;
   setControlPoints: (
     update: (points: ControlPointData[]) => ControlPointData[]
   ) => void;
@@ -29,6 +32,7 @@ export function ControlPoint({
   color,
   active,
   setControlPoints,
+  setControlPointsGlobal,
 }: ControlPointProps) {
   const container = useStore((store) => store.domNode);
   const { screenToFlowPosition } = useReactFlow();
@@ -52,8 +56,22 @@ export function ControlPoint({
           return points.map((p) => (p.id === id ? { ...p, ...pos } : p));
         }
       });
+      setControlPointsGlobal((points) => {
+        const shouldActivate = !active;
+        if (shouldActivate) {
+          if (index !== 0) {
+            return points.flatMap((p, i) =>
+              i === index * 0.5 - 1 ? [p, { ...pos, id, active: true }] : p
+            );
+          } else {
+            return [{ ...pos, id, active: true }, ...points];
+          }
+        } else {
+          return points.map((p) => (p.id === id ? { ...p, ...pos } : p));
+        }
+      });
     },
-    [id, active, index, setControlPoints]
+    [setControlPoints, setControlPointsGlobal, active, index, id]
   );
 
   const deletePoint = useCallback(() => {
@@ -109,7 +127,7 @@ export function ControlPoint({
           break;
       }
     },
-    [id, x, y, updatePosition, setControlPoints]
+    [active, updatePosition, x, y, deletePoint]
   );
 
   // EFFECTS -------------------------------------------------------------------

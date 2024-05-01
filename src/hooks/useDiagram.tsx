@@ -11,6 +11,7 @@ import {
   addEdge,
   applyNodeChanges,
   useReactFlow as useReactFlowHook,
+  useStore,
 } from "@xyflow/react";
 import {
   DragEventHandler,
@@ -37,7 +38,6 @@ export const useDiagram = () => {
   } = useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
-  const [internalEdges, setInternalEdges] = useState<Edge[]>(getEdges());
   const connectingNodeId = useRef(null);
   const {
     HelperLines,
@@ -133,9 +133,6 @@ export const useDiagram = () => {
           ),
         },
       };
-      setInternalEdges((edges) =>
-        addEdge({ ...edge, type: "editable-edge" }, edges)
-      );
       setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
     },
     [setEdges, takeSnapshot]
@@ -206,9 +203,6 @@ export const useDiagram = () => {
             ),
           },
         };
-        setInternalEdges((edges) =>
-          addEdge({ ...edge, type: "editable-edge" }, edges)
-        );
         setEdges((edges) => addEdge({ ...edge, type: "editable-edge" }, edges));
         setSelectedNodeId(newNode.id);
       }
@@ -248,10 +242,6 @@ export const useDiagram = () => {
     setEditingEdgeId(null);
   }, []);
 
-  useEffect(() => {
-    setInternalEdges(getEdges());
-  }, [getEdges]);
-
   const Markers = () => {
     return getEdges().map((edge, index) => {
       return (
@@ -288,11 +278,10 @@ export const useDiagram = () => {
     editingEdgeId,
     onPaneClick,
     onNodeClick,
-    internalEdges,
-    setInternalEdges,
     useReactFlow,
     Markers,
     getEdge,
     setEdges,
+    useStore,
   };
 };
