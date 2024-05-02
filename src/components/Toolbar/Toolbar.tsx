@@ -9,6 +9,7 @@ const colors = [
   "#438D57",
   "#3F8AE2",
   "#803DEC",
+  "#FFFFFF80",
 ];
 
 type ShapeNodeToolbarProps = {

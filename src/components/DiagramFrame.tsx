@@ -31,12 +31,13 @@ import {
 const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
   ssr: false,
 });
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 import { ConnectionLine } from "./edges/ConnectionLine";
+import savedDiagramJson from "../json-diagrams/save.json";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -71,9 +72,12 @@ const Flow = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const EditableEdgeWrapper = (props: EdgeProps) => {
-    return <EditableEdge {...props} useDiagram={diagram} />;
-  };
+  const EditableEdgeWrapper = useCallback(
+    (props: EdgeProps) => {
+      return <EditableEdge {...props} useDiagram={diagram} />;
+    },
+    [diagram]
+  );
   const edgeTypes: EdgeTypes = {
     "editable-edge": EditableEdgeWrapper,
   };
@@ -93,8 +97,8 @@ const Flow = () => {
             onPaneClick={diagram.onPaneClick}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
-            defaultNodes={defaultNodes}
-            defaultEdges={defaultEdges}
+            defaultNodes={savedDiagramJson.nodes}
+            defaultEdges={savedDiagramJson.edges}
             defaultEdgeOptions={defaultEdgeOptions}
             connectionLineType={ConnectionLineType.SmoothStep}
             fitView

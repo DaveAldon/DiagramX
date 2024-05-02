@@ -41,7 +41,7 @@ export function MarkerDefinition({ color, id }: MarkerDefinitionsProps) {
   return (
     <svg>
       <defs>
-        <Marker id={id} strokeColor={color} fillColor="green">
+        <Marker id={id} strokeColor={color} fillColor="#141414">
           <polyline
             stroke={color}
             strokeLinecap="round"

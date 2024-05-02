@@ -25,6 +25,7 @@ import { useAppStore } from "@/components/store";
 import { DEFAULT_ALGORITHM } from "@/components/edges/EditableEdge/constants";
 import { ControlPointData } from "@/components/edges/EditableEdge";
 import { MarkerDefinition } from "@/components/edges/MarkerDefinition";
+import { debounce } from "lodash";
 
 export const useDiagram = () => {
   const useReactFlow = useReactFlowHook;
@@ -51,7 +52,7 @@ export const useDiagram = () => {
   };
   const [selectedNodeId, setSelectedNodeId] = useState<string>();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (selectedNodeId) {
       const selectedNode = getNode(selectedNodeId);
@@ -72,7 +73,7 @@ export const useDiagram = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, [getNode, selectedNodeId, setNodes]);
+  }, [getNode, selectedNodeId, setNodes]); */
 
   // this function is called when a node from the sidebar is dropped onto the react flow pane
   const onDrop: DragEventHandler<HTMLDivElement> = (evt) => {
@@ -101,12 +102,12 @@ export const useDiagram = () => {
     );
   };
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => {
+  const onNodesChange = useCallback(
+    debounce((changes) => {
       setNodes((nodes) =>
         applyNodeChanges(handleHelperLines(changes, nodes), nodes)
       );
-    },
+    }, 1), // 100ms delay
     [setNodes, handleHelperLines]
   );
 
@@ -248,7 +249,7 @@ export const useDiagram = () => {
         <MarkerDefinition
           key={index}
           id={`marker-${edge.id}`}
-          color={`${edge.style?.stroke}`}
+          color={`${edge.style?.stroke || "#FFFFFF80"}`}
         />
       );
     });
@@ -276,6 +277,7 @@ export const useDiagram = () => {
     canUndo,
     onEdgeClick,
     editingEdgeId,
+    setEditingEdgeId,
     onPaneClick,
     onNodeClick,
     useReactFlow,
