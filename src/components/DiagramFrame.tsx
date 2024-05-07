@@ -119,6 +119,8 @@ const Flow = () => {
             //onEdgesChange={diagram.onEdgesChange}
             elevateEdgesOnSelect
             elevateNodesOnSelect
+            maxZoom={10}
+            minZoom={0.1}
           >
             <Background color="grey" bgColor="white" />
             <Panel position="top-left">

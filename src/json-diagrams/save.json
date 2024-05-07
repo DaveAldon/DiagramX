@@ -4,8 +4,8 @@
       "id": "1",
       "type": "shape",
       "position": {
-        "x": 0,
-        "y": 0
+        "x": -101,
+        "y": -195
       },
       "style": {
         "width": 120,
@@ -13,13 +13,17 @@
       },
       "data": {
         "type": "round-rectangle",
-        "color": "#3F8AE2"
+        "color": "#3F8AE2",
+        "contents": "sadfjasdfklsjadfklasldflkajsdlfkjaslkdflkasjdlfjasldkjfalsjdkf;lasjdf;laksjd;flajsdlfjas;ldfja;lsdjf;lasdkjflasdjf"
       },
       "selected": false,
       "measured": {
-        "width": 120,
-        "height": 60
-      }
+        "width": 250,
+        "height": 240
+      },
+      "width": 250,
+      "height": 240,
+      "resizing": false
     },
     {
       "id": "2",
@@ -321,6 +325,28 @@
       "sourceHandle": "right",
       "targetHandle": "left",
       "type": "editable-edge"
+    },
+    {
+      "type": "editable-edge",
+      "style": {
+        "strokeWidth": 2
+      },
+      "source": "4",
+      "sourceHandle": "left",
+      "target": "1",
+      "targetHandle": "right",
+      "id": "xy-edge__4left-1right"
+    },
+    {
+      "type": "editable-edge",
+      "style": {
+        "strokeWidth": 2
+      },
+      "source": "1",
+      "sourceHandle": "right-bottom",
+      "target": "4",
+      "targetHandle": "left",
+      "id": "xy-edge__1right-bottom-4left"
     }
   ]
 }

@@ -118,6 +118,24 @@ const ShapeNode = ({ id, selected, data }: any) => {
     );
   };
 
+  const onContentsChange = (contents: string) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              contents,
+            },
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
   useEffect(() => {
     updateNodeInternals(id);
   }, [id, updateNodeInternals]);
@@ -169,10 +187,28 @@ const ShapeNode = ({ id, selected, data }: any) => {
         />
       </div>
       <Handle
+        style={{ ...handleStyle, left: "23%" }}
+        id="top-left"
+        type="source"
+        position={Position.Top}
+      />
+      <Handle
         style={handleStyle}
         id="top"
         type="source"
         position={Position.Top}
+      />
+      <Handle
+        style={{ ...handleStyle, left: "auto", right: "20%" }}
+        id="top-right"
+        type="source"
+        position={Position.Top}
+      />
+      <Handle
+        style={{ ...handleStyle, top: "23%" }}
+        id="right-top"
+        type="source"
+        position={Position.Right}
       />
       <Handle
         style={handleStyle}
@@ -181,10 +217,34 @@ const ShapeNode = ({ id, selected, data }: any) => {
         position={Position.Right}
       />
       <Handle
+        style={{ ...handleStyle, top: "auto", bottom: "20%" }}
+        id="right-bottom"
+        type="source"
+        position={Position.Right}
+      />
+      <Handle
+        style={{ ...handleStyle, left: "23%" }}
+        id="bottom-left"
+        type="source"
+        position={Position.Bottom}
+      />
+      <Handle
         style={handleStyle}
         id="bottom"
         type="source"
         position={Position.Bottom}
+      />
+      <Handle
+        style={{ ...handleStyle, left: "auto", right: "20%" }}
+        id="bottom-right"
+        type="source"
+        position={Position.Bottom}
+      />
+      <Handle
+        style={{ ...handleStyle, top: "23%" }}
+        id="left-top"
+        type="source"
+        position={Position.Left}
       />
       <Handle
         style={handleStyle}
@@ -192,7 +252,17 @@ const ShapeNode = ({ id, selected, data }: any) => {
         type="source"
         position={Position.Left}
       />
-      {/* <NodeLabel placeholder={data.type} /> */}
+      <Handle
+        style={{ ...handleStyle, top: "auto", bottom: "20%" }}
+        id="left-bottom"
+        type="source"
+        position={Position.Left}
+      />
+      <NodeLabel
+        placeholder={data.type}
+        data={data.contents}
+        onContentsChange={onContentsChange}
+      />
     </>
   );
 };

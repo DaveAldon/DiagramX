@@ -90,7 +90,9 @@ function EdgeToolbar(props: EdgeToolbarProps) {
               animated: true,
               style: {
                 ...edge.style,
-                animation: `dashdraw 0.4s linear infinite`,
+                strokeDashArray: 1000,
+                strokeDashOffset: 1000,
+                animation: "dashdraw 0.4s linear infinite",
               },
               data: { ...edge.data, animation: Animation.AnimatedDotted },
             }
@@ -164,7 +166,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   return (
     <div
-      className={`nodrag rounded-md flex flex-col bg-slate-800 gap-1 ${
+      className={`nodrag rounded-md flex flex-col bg-transparent text-black gap-1 ${
         editingEdgeId ? "visible" : "hidden"
       }`}
     >
@@ -179,7 +181,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
                 color === activeColor ? "border" : ""
               }`}
             >
-              {color === activeColor ? <Crosshair /> : ""}
+              {color === activeColor ? <Crosshair color="white" /> : ""}
             </button>
           ))}
         </div>
@@ -188,31 +190,31 @@ function EdgeToolbar(props: EdgeToolbarProps) {
             onClick={() => onShapeChange(Algorithm.Linear)}
             className={`flex justify-center items-center ${
               Algorithm.Linear === activeShape
-                ? " border-white border rounded-md"
+                ? " border-black border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <AnalyticsOutline color={"white"} />
+            <AnalyticsOutline color={"black"} />
           </button>
           <button
             onClick={() => onShapeChange(Algorithm.BezierCatmullRom)}
             className={`flex justify-center items-center ${
               Algorithm.BezierCatmullRom === activeShape
-                ? "border-white border rounded-md"
+                ? "border-black border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <TbVectorSpline color={"white"} />
+            <TbVectorSpline color={"black"} />
           </button>
           <button
             onClick={() => onShapeChange(Algorithm.CatmullRom)}
             className={`flex justify-center items-center ${
               Algorithm.CatmullRom === activeShape
-                ? "border-white border rounded-md"
+                ? "border-black border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <TfiVector color={"white"} />
+            <TfiVector color={"black"} />
           </button>
         </div>
       </div>
@@ -221,7 +223,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeShowMovingBall === true
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => onMovingBallChange(true)}
@@ -231,7 +233,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimationDirection === AnimationDirection.Normal
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => changeAnimationDirection("normal")}
@@ -241,7 +243,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeShowMovingBall === false
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => onMovingBallChange(false)}
@@ -251,7 +253,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimationDirection === AnimationDirection.Reverse
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => changeAnimationDirection("reverse")}
@@ -263,7 +265,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.AnimatedDotted
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => setAnimatedDotted()}
@@ -273,24 +275,24 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.Dotted
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => {
             setDotted();
           }}
         >
-          <RxBorderDotted color="white" size={30} />
+          <RxBorderDotted color="black" size={30} />
         </button>
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.Solid
-              ? " border-white border rounded-md"
+              ? " border-black border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => setSolid()}
         >
-          <IoRemoveOutline color="white" size={30} />
+          <IoRemoveOutline color="black" size={30} />
         </button>
       </div>
     </div>
