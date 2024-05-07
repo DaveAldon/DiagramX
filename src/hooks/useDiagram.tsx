@@ -249,7 +249,7 @@ export const useDiagram = () => {
         <MarkerDefinition
           key={index}
           id={`marker-${edge.id}`}
-          color={`${edge.style?.stroke || "#FFFFFF80"}`}
+          color={`${edge.style?.stroke || "#a5a4a5"}`}
         />
       );
     });

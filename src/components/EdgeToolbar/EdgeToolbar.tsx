@@ -15,7 +15,7 @@ const colors = [
   "#438D57",
   "#3F8AE2",
   "#803DEC",
-  "#FFFFFF80",
+  "#a5a4a5",
 ];
 
 enum Animation {
@@ -53,7 +53,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   const editingEdgeId = diagram.editingEdgeId;
   const edge = diagram.getEdge(`${editingEdgeId}`);
   const activeShape = edge?.data?.algorithm || Algorithm.BezierCatmullRom;
-  const activeColor = edge?.style?.stroke || "#FFFFFF80";
+  const activeColor = edge?.style?.stroke || "#a5a4a5";
   const activeAnimation = edge?.data?.animation || Animation.Solid;
   const activeAnimationDirection = edge?.data?.animationDirection || "normal";
   const activeShowMovingBall = edge?.data?.showMovingBall || false;

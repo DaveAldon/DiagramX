@@ -27,6 +27,7 @@
     "react-modal": "^3.16.1",
     "react-monaco-editor": "^0.55.0",
     "react-resizable-panels": "^2.0.18",
+    "react-textarea-autosize": "^8.5.3",
     "use-undoable": "^5.0.0"
   },
   "devDependencies": {

@@ -70,7 +70,7 @@ export function ConnectionLine({
     <g>
       <path
         fill="none"
-        stroke={"#FFFFFF80"}
+        stroke={"#a5a4a5"}
         strokeWidth={2}
         className={connectionStatus === "valid" ? "" : "animated"}
         d={path}

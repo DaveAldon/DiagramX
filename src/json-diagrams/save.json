@@ -46,8 +46,8 @@
       "id": "3",
       "type": "shape",
       "position": {
-        "x": -160,
-        "y": 130
+        "x": -458.70370370370375,
+        "y": -32.66666666666666
       },
       "style": {
         "width": 80,
@@ -55,13 +55,19 @@
       },
       "data": {
         "type": "circle",
-        "color": "#438D57"
+        "color": "#438D57",
+        "title": "asddsd",
+        "description": "khgkjkhkghkugjkhgjgjgkjgkjhgkjghkjhgkjhgkjd\nljhkjhk"
       },
       "selected": false,
       "measured": {
-        "width": 80,
-        "height": 80
-      }
+        "width": 241,
+        "height": 238
+      },
+      "dragging": false,
+      "width": 241,
+      "height": 238,
+      "resizing": false
     },
     {
       "id": "4",

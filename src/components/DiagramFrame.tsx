@@ -55,7 +55,7 @@ const Flow = () => {
   const { getSnapshotJson, takeSnapshot } = useUndoRedo();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const controls = useControls({
-    theme: { options: ["dark", "light"] },
+    theme: { options: ["light"] },
     snapToGrid: false,
     panOnScroll: true,
     zoomOnDoubleClick: false,
@@ -120,7 +120,7 @@ const Flow = () => {
             elevateEdgesOnSelect
             elevateNodesOnSelect
           >
-            <Background />
+            <Background color="grey" bgColor="white" />
             <Panel position="top-left">
               <Sidebar />
             </Panel>

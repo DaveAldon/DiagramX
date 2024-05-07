@@ -61,7 +61,7 @@ export function EditableEdge({
   const { setEdges } = useReactFlow();
   const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
   const targetOrigin = { x: targetX, y: targetY } as XYPosition;
-  const color = style?.stroke || "#FFFFFF80";
+  const color = style?.stroke || "#a5a4a5";
   const direction = (style?.animationDirection as string) || "normal";
   const shouldShowPoints = useStore((store) => {
     const sourceNode = store.nodeLookup.get(source as string)!;
@@ -133,7 +133,7 @@ export function EditableEdge({
         markerEnd={`url(#marker-${id})`}
         style={{
           ...style,
-          strokeWidth: 2,
+          strokeWidth: 1,
           stroke: color,
         }}
       />

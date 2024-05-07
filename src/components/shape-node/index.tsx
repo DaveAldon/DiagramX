@@ -7,6 +7,7 @@ import {
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
+import TextareaAutosize from "react-textarea-autosize";
 
 import Shape from "../shape";
 import { type ShapeType } from "../shape/types";
@@ -14,7 +15,6 @@ import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
 import { useEffect } from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
-import { hext } from "@davealdon/hext";
 
 export type ShapeNodeData = {
   type: ShapeType;
@@ -82,6 +82,42 @@ const ShapeNode = ({ id, selected, data }: any) => {
     updateNodeInternals(id);
   };
 
+  const onTitleChange = (title: string) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              title,
+            },
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
+  const onDescriptionChange = (description: string) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              description,
+            },
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
   useEffect(() => {
     updateNodeInternals(id);
   }, [id, updateNodeInternals]);
@@ -101,15 +137,37 @@ const ShapeNode = ({ id, selected, data }: any) => {
         onResize={onResize}
         onResizeStart={takeSnapshot}
       />
-      <Shape
-        type={type}
-        width={width}
-        height={height}
-        fill={color}
-        strokeWidth={1}
-        stroke={color}
-        fillOpacity={0.2}
-      />
+      <div style={{ position: "relative" }}>
+        <input
+          className={`absolute bottom-full p-2 text-center w-full text-sm font-bold text-black ${
+            data.title === undefined || data.title === ""
+              ? "bg-transparent"
+              : "bg-white bg-opacity-10 backdrop-blur-sm rounded-md"
+          }`}
+          //placeholder={data.type}
+          value={data.title}
+          onChange={(e) => onTitleChange(e.target.value)}
+        />
+        <Shape
+          type={type}
+          width={width}
+          height={height}
+          fill={color}
+          strokeWidth={1}
+          stroke={color}
+          fillOpacity={0.2}
+        />
+        <TextareaAutosize
+          className={`absolute resize-none top-full p-2 text-left w-full text-xs text-black ${
+            data.description === undefined || data.description === ""
+              ? "bg-transparent"
+              : "bg-white bg-opacity-10 backdrop-blur-sm rounded-md"
+          }`}
+          //placeholder={data.type}
+          value={data.description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
+        />
+      </div>
       <Handle
         style={handleStyle}
         id="top"
@@ -134,7 +192,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
         type="source"
         position={Position.Left}
       />
-      <NodeLabel placeholder={data.type} />
+      {/* <NodeLabel placeholder={data.type} /> */}
     </>
   );
 };
