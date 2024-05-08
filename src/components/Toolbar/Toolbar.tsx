@@ -21,7 +21,7 @@ type ShapeNodeToolbarProps = {
   onColorChange?: (color: string) => void;
   onShapeChange?: (shape: ShapeType) => void;
   onDeleteNode?: () => void;
-  onContentsChange?: (contents: string) => void;
+  onIconChange?: (contents: string) => void;
 };
 
 function ShapeNodeToolbar({
@@ -30,13 +30,13 @@ function ShapeNodeToolbar({
   activeColor,
   activeShape,
   onDeleteNode,
-  onContentsChange,
+  onIconChange,
 }: ShapeNodeToolbarProps) {
   const [iconName, setIconName] = useState("");
 
   useEffect(() => {
-    if (onContentsChange) {
-      onContentsChange(iconName);
+    if (onIconChange) {
+      onIconChange(iconName);
     }
   }, [iconName]);
 

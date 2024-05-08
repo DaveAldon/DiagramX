@@ -15,6 +15,8 @@ import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
 import { useEffect } from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconName } from "@fortawesome/free-solid-svg-icons";
 
 export type ShapeNodeData = {
   type: ShapeType;
@@ -120,7 +122,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
     );
   };
 
-  const onContentsChange = (contents: string) => {
+  const onContentsChange = (contents: any) => {
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === id) {
@@ -129,6 +131,24 @@ const ShapeNode = ({ id, selected, data }: any) => {
             data: {
               ...node.data,
               contents,
+            },
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
+  const onIconChange = (icon: any) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              icon,
             },
           };
         }
@@ -154,7 +174,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
         activeShape={type}
         activeColor={color}
         onDeleteNode={onDeleteNode}
-        onContentsChange={onContentsChange}
+        onIconChange={onIconChange}
       />
       <NodeResizer
         color={color}
@@ -266,11 +286,20 @@ const ShapeNode = ({ id, selected, data }: any) => {
         type="source"
         position={Position.Left}
       />
-      <NodeLabel
-        placeholder={data.type}
-        data={data.contents}
-        onContentsChange={onContentsChange}
-      />
+      {data.icon ? null : (
+        <NodeLabel
+          placeholder={data.type}
+          data={data.contents}
+          onContentsChange={onContentsChange}
+        />
+      )}
+      {data.icon ? (
+        <FontAwesomeIcon
+          className="h-[50%] w-[50%] node-label"
+          icon={["fas", data.icon as IconName]}
+          color={color}
+        />
+      ) : null}
     </>
   );
 };

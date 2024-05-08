@@ -64,8 +64,6 @@ const IconPicker = ({ value, onChange }: FontAwesomeIconPickerProps) => {
     );
   };
 
-  console.log(anchorEl);
-
   return (
     <div className="pl-1">
       <div className="flex flex-row gap-2">
@@ -75,7 +73,7 @@ const IconPicker = ({ value, onChange }: FontAwesomeIconPickerProps) => {
               <FontAwesomeIcon
                 onClick={(e: any) => setAnchorEl(e.currentTarget)}
                 icon={["fas", value as IconName]}
-                color="#556ee6"
+                color="#000000"
               />
               <button
                 onClick={() => {
