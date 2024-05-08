@@ -21,6 +21,8 @@ export type ShapeNodeData = {
   color: string;
 };
 
+const fileTypes = ["JPG", "PNG", "GIF"];
+
 // this will return the current dimensions of the node (measured internally by react flow)
 const useNodeDimensions = (id: string) => {
   const node = useStore((state) => state.nodeLookup.get(id));
@@ -136,6 +138,10 @@ const ShapeNode = ({ id, selected, data }: any) => {
     );
   };
 
+  const onDeleteNode = () => {
+    setNodes((nodes) => nodes.filter((node) => node.id !== id));
+  };
+
   useEffect(() => {
     updateNodeInternals(id);
   }, [id, updateNodeInternals]);
@@ -147,6 +153,8 @@ const ShapeNode = ({ id, selected, data }: any) => {
         onShapeChange={onShapeChange}
         activeShape={type}
         activeColor={color}
+        onDeleteNode={onDeleteNode}
+        onContentsChange={onContentsChange}
       />
       <NodeResizer
         color={color}

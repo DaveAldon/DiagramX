@@ -255,6 +255,11 @@ export const useDiagram = () => {
     });
   };
 
+  const deselectAll = () => {
+    setNodes((nodes) => nodes.map((node) => ({ ...node, selected: false })));
+    setEdges((edges) => edges.map((edge) => ({ ...edge, selected: false })));
+  };
+
   return {
     onDragOver,
     onDrop,
@@ -285,5 +290,6 @@ export const useDiagram = () => {
     getEdge,
     setEdges,
     useStore,
+    deselectAll,
   };
 };

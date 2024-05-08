@@ -1,6 +1,9 @@
 import { NodeToolbar } from "@xyflow/react";
 import { ShapeComponents, ShapeType } from "../shape/types";
 import SidebarItem from "../Sidebar/SidebarItem";
+import { Trash2 } from "react-feather";
+import { useEffect, useState } from "react";
+import IconPicker from "../IconPicker/IconPicker";
 
 const colors = [
   "#CF4C2C",
@@ -17,6 +20,8 @@ type ShapeNodeToolbarProps = {
   activeShape: ShapeType;
   onColorChange?: (color: string) => void;
   onShapeChange?: (shape: ShapeType) => void;
+  onDeleteNode?: () => void;
+  onContentsChange?: (contents: string) => void;
 };
 
 function ShapeNodeToolbar({
@@ -24,9 +29,19 @@ function ShapeNodeToolbar({
   onShapeChange = () => false,
   activeColor,
   activeShape,
+  onDeleteNode,
+  onContentsChange,
 }: ShapeNodeToolbarProps) {
+  const [iconName, setIconName] = useState("");
+
+  useEffect(() => {
+    if (onContentsChange) {
+      onContentsChange(iconName);
+    }
+  }, [iconName]);
+
   return (
-    <NodeToolbar className="nodrag flex flex-col" offset={32}>
+    <NodeToolbar className="nowheel nodrag flex flex-col" offset={32}>
       <div className="flex flex-row gap-2">
         {colors.map((color) => (
           <button
@@ -36,8 +51,14 @@ function ShapeNodeToolbar({
             className={`color-swatch ${color === activeColor ? "active" : ""}`}
           />
         ))}
+        {onDeleteNode ? (
+          <button onClick={() => onDeleteNode()}>
+            <Trash2 color="black" />
+          </button>
+        ) : null}
       </div>
-      <div className="grid grid-cols-5">
+      <IconPicker value={iconName} onChange={setIconName} />
+      <div className="grid grid-cols-10">
         {ShapeComponents &&
           Object.keys(ShapeComponents).map((shape) => (
             <button

@@ -85,7 +85,7 @@ export function EditableEdge({
           return { ...e, data: localData };
         })
       );
-      setTimeout(() => {
+      /* setTimeout(() => {
         useDiagram.setEdges((edges) =>
           edges.map((e) => {
             if (e.id !== id) return e;
@@ -97,7 +97,7 @@ export function EditableEdge({
             return { ...e, data: localData };
           })
         );
-      }, 1000);
+      }, 1000); */
     },
     [id, setEdges]
   );

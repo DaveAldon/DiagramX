@@ -131,12 +131,16 @@ const Flow = () => {
                 <EdgeToolbar takeSnapshot={takeSnapshot} useDiagram={diagram} />
               </Panel>
             ) : null}
-            <Panel
-              className="cursor-pointer"
-              position="top-right"
-              onClick={() => toggleSidebar()}
-            >
-              <button>{isSidebarOpen ? "Hide" : "Show"} JSON</button>
+            <Panel className="cursor-pointer gap-2 flex" position="top-right">
+              <button
+                onClick={() => diagram.deselectAll()}
+                className="text-black bg-green-100 rounded-md p-1"
+              >
+                Save
+              </button>
+              <button onClick={() => toggleSidebar()} className="text-black">
+                {isSidebarOpen ? "Hide" : "Show"} JSON
+              </button>
             </Panel>
             <Controls showInteractive={false}>
               <ControlButton onClick={() => diagram.undo()} title="Undo">
