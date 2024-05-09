@@ -1,6 +1,7 @@
-import { useCallback, useRef } from "react";
+import { RefObject, useCallback, useRef, useState } from "react";
 import {
   BaseEdge,
+  EdgeLabelRenderer,
   useReactFlow,
   useStore,
   type Edge,
@@ -11,6 +12,8 @@ import { ControlPoint, type ControlPointData } from "./ControlPoint";
 import { getPath, getControlPoints } from "./path";
 import { Algorithm } from "./constants";
 import { useDiagram } from "@/hooks/useDiagram";
+import useDraggableEdgeLabel from "@/hooks/useDraggableEdgeLabel";
+import { Animation } from "@/components/EdgeToolbar/EdgeToolbar";
 
 const useIdsForInactiveControlPoints = (points: ControlPointData[]) => {
   const prevIds = useRef<string[]>([]);
@@ -59,6 +62,7 @@ export function EditableEdge({
   ...delegated
 }: EditableEdgeProps) {
   const { setEdges } = useReactFlow();
+
   const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
   const targetOrigin = { x: targetX, y: targetY } as XYPosition;
   const color = style?.stroke || "#a5a4a5";
@@ -69,6 +73,13 @@ export function EditableEdge({
 
     return selected || sourceNode.selected || targetNode.selected;
   });
+
+  const [edgePathRef, draggableEdgeLabelRef] = useDraggableEdgeLabel(
+    sourceX,
+    sourceY,
+    targetX,
+    targetY
+  );
 
   const setControlPoints = useCallback(
     (update: (points: ControlPointData[]) => ControlPointData[]) => {
@@ -121,22 +132,73 @@ export function EditableEdge({
   });
 
   const controlPointsWithIds = useIdsForInactiveControlPoints(controlPoints);
+  console.log(data.animation);
   return (
     <>
-      <BaseEdge
+      <path
         id={id}
-        path={path}
-        {...delegated}
-        /* markerStart={markerStart}
-        markerEnd={markerEnd} */
-        markerStart={`url(#marker-${id})`}
-        markerEnd={`url(#marker-${id})`}
+        d={path}
+        markerEnd={markerEnd}
         style={{
           ...style,
-          strokeWidth: 1,
+          strokeWidth: 2,
           stroke: color,
         }}
+        ref={edgePathRef}
+        fill="transparent"
       />
+      <EdgeLabelRenderer>
+        <div
+          ref={draggableEdgeLabelRef}
+          style={{
+            position: "absolute",
+            transform: `translate(-50%, -50%)`,
+            pointerEvents: "all",
+            zIndex: 1000,
+          }}
+          className="nodrag nopan"
+        >
+          {data.title ? (
+            <div
+              ref={draggableEdgeLabelRef as RefObject<HTMLInputElement>}
+              style={{
+                borderColor: `${color}`,
+                borderWidth: "2px",
+                borderStyle:
+                  data.animation === Animation.Solid ? "solid" : "none",
+                /* animation:
+                  data.animation === "not implemented"
+                    ? "dashdraw_edge 2s linear infinite, dashrotate 2s linear infinite" // Apply both animations
+                    : "none", */
+                backgroundImage:
+                  data.animation === Animation.Solid
+                    ? "none"
+                    : (`linear-gradient(90deg, ${color} 50%, transparent 50%),
+                      linear-gradient(90deg, ${color} 50%, transparent 50%),
+                      linear-gradient(0deg, ${color} 50%, transparent 50%),
+                      linear-gradient(0deg, ${color} 50%, transparent 50%)` as string),
+                backgroundRepeat:
+                  data.animation === Animation.Solid
+                    ? "none"
+                    : "repeat-x, repeat-x, repeat-y, repeat-y",
+                backgroundSize:
+                  data.animation === Animation.Solid
+                    ? "none"
+                    : "15px 2px, 15px 2px, 2px 15px, 2px 15px",
+                backgroundPosition:
+                  data.animation === Animation.Solid
+                    ? "none"
+                    : "left top, right bottom, left bottom, right top",
+                animation:
+                  data.animation === Animation.AnimatedDotted
+                    ? `border-dance 1s infinite linear ${data.animationDirection}`
+                    : "none",
+              }}
+              className={` bottom-full p-2 text-center text-sm text-black bg-white rounded-md`}
+            >{`${data.title}`}</div>
+          ) : null}
+        </div>
+      </EdgeLabelRenderer>
 
       {shouldShowPoints &&
         controlPointsWithIds.map((point, index) => (

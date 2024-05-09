@@ -8,7 +8,7 @@ import {
 } from "@xyflow/react";
 
 import "./buttonedge.css";
-import EdgeToolbar from "../EdgeToolbar/EdgeToolbar";
+import useDraggableEdgeLabel from "@/hooks/useDraggableEdgeLabel";
 
 export default function ButtonEdge({
   id,
@@ -22,7 +22,6 @@ export default function ButtonEdge({
   markerEnd,
 }: EdgeProps) {
   const { setEdges } = useReactFlow();
-  const [isToolbarVisible, setIsToolbarVisibile] = useState(false);
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -33,20 +32,31 @@ export default function ButtonEdge({
     targetPosition,
   });
 
+  const [edgePathRef, draggableEdgeLabelRef] = useDraggableEdgeLabel(
+    sourceX,
+    sourceY,
+    targetX,
+    targetY
+  );
+
   const onEdgeClick = () => {
-    setIsToolbarVisibile(!isToolbarVisible);
-    //setEdges((edges) => edges.filter((edge) => edge.id !== id));
+    setEdges((edges) => edges.filter((edge) => edge.id !== id));
   };
 
   return (
     <>
-      <BaseEdge
-        path={edgePath}
+      <path
+        id={id}
+        d={edgePath}
         markerEnd={markerEnd}
         style={{ ...style, strokeWidth: 2 }}
+        ref={edgePathRef}
+        stroke="#000"
+        fill="transparent"
       />
-      {/* <EdgeLabelRenderer>
+      <EdgeLabelRenderer>
         <div
+          ref={draggableEdgeLabelRef}
           style={{
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
@@ -58,10 +68,10 @@ export default function ButtonEdge({
           className="nodrag nopan"
         >
           <button className="edgebutton" onClick={onEdgeClick}>
-            ×
+            ×asdasd
           </button>
         </div>
-      </EdgeLabelRenderer> */}
+      </EdgeLabelRenderer>
     </>
   );
 }

@@ -18,7 +18,7 @@ const colors = [
   "#a5a4a5",
 ];
 
-enum Animation {
+export enum Animation {
   AnimatedDotted = "animatedDotted",
   Dotted = "dotted",
   Solid = "solid",
@@ -57,6 +57,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
   const activeAnimation = edge?.data?.animation || Animation.Solid;
   const activeAnimationDirection = edge?.data?.animationDirection || "normal";
   const activeShowMovingBall = edge?.data?.showMovingBall || false;
+  const edgeTitle = edge?.data?.title || "";
 
   const onColorChange = (color: string) => {
     props.takeSnapshot();
@@ -159,6 +160,17 @@ function EdgeToolbar(props: EdgeToolbarProps) {
       edges.map((edge) =>
         edge.id === editingEdgeId
           ? { ...edge, data: { ...edge.data, showMovingBall: isMoving } }
+          : edge
+      )
+    );
+  };
+
+  const onUpdateEdgeTitle = (title: string) => {
+    props.takeSnapshot();
+    diagram.setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === editingEdgeId
+          ? { ...edge, data: { ...edge.data, title } }
           : edge
       )
     );
@@ -294,6 +306,15 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         >
           <IoRemoveOutline color="black" size={30} />
         </button>
+      </div>
+      <div className="grid grid-cols-1 justify-between">
+        <input
+          type="text"
+          value={edgeTitle as string}
+          onChange={(e) => onUpdateEdgeTitle(e.target.value)}
+          placeholder="Edge Title"
+          className="border border-black rounded-md p-2"
+        />
       </div>
     </div>
   );

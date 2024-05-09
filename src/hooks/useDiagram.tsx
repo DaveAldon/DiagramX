@@ -1,11 +1,9 @@
 import { useHelperLines } from "@/hooks/useHelperLines";
 import {
   Edge,
-  NodeMouseHandler,
   OnConnect,
   OnEdgesDelete,
   OnNodeDrag,
-  OnNodesChange,
   OnNodesDelete,
   SelectionDragHandler,
   addEdge,
@@ -13,13 +11,7 @@ import {
   useReactFlow as useReactFlowHook,
   useStore,
 } from "@xyflow/react";
-import {
-  DragEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { DragEventHandler, useCallback, useRef, useState } from "react";
 import useUndoRedo from "./useUndoRedo";
 import { useAppStore } from "@/components/store";
 import { DEFAULT_ALGORITHM } from "@/components/edges/EditableEdge/constants";
@@ -29,14 +21,8 @@ import { debounce } from "lodash";
 
 export const useDiagram = () => {
   const useReactFlow = useReactFlowHook;
-  const {
-    screenToFlowPosition,
-    setNodes,
-    setEdges,
-    getNode,
-    getEdges,
-    getEdge,
-  } = useReactFlow();
+  const { screenToFlowPosition, setNodes, setEdges, getEdges, getEdge } =
+    useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const connectingNodeId = useRef(null);
