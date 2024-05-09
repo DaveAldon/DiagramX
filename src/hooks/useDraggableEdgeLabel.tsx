@@ -1,3 +1,4 @@
+import { useReactFlow } from "@xyflow/react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { findIndex, toNumber } from "lodash";
@@ -42,8 +43,10 @@ const useDraggableEdgeLabel = (
   sourceY: number,
   targetX: number,
   targetY: number,
+  edgeId: string,
   labelPosition?: number
 ): [RefObject<SVGPathElement>, RefObject<HTMLDivElement>] => {
+  const { setEdges } = useReactFlow();
   const edgePathRef = useRef<SVGPathElement>(null);
   const dragInstance = useRef<Draggable[] | null>(null);
   const draggableEdgeLabelRef = useRef<HTMLDivElement>(null);
@@ -86,10 +89,26 @@ const useDraggableEdgeLabel = (
                     point.x === transform.x && point.y === transform.y
                 )
               );
-              console.log(
+
+              setEdges((edges) => {
+                const updatedEdges = edges.map((edge) => {
+                  if (edge.id === edgeId) {
+                    return {
+                      ...edge,
+                      data: {
+                        ...edge.data,
+                        labelPosition: edgeText.current.index,
+                      },
+                    };
+                  }
+                  return edge;
+                });
+                return updatedEdges;
+              });
+              /* console.log(
                 "🚀 ~  Updated Edge Label Position is:",
                 edgeText.current.index
-              );
+              ); */
             }
           },
           onClick: () =>

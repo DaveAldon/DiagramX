@@ -79,7 +79,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
           className="text-white p-2 m-2 bg-slate-800 rounded-md"
           onClick={() => setSyntaxHighlighting(!syntaxHighlighting)}
         >
-          Toggle syntax highlight
+          Syntax
         </button>
       </div>
       <MonacoEditor

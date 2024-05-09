@@ -78,13 +78,13 @@ export function EditableEdge({
     sourceX,
     sourceY,
     targetX,
-    targetY
+    targetY,
+    id,
+    data.labelPosition as number
   );
 
   const setControlPoints = useCallback(
     (update: (points: ControlPointData[]) => ControlPointData[]) => {
-      console.log("setControlPoints");
-
       setEdges((edges) =>
         edges.map((e) => {
           if (e.id !== id) return e;
@@ -130,9 +130,7 @@ export function EditableEdge({
     fromSide: sourcePosition,
     toSide: targetPosition,
   });
-
   const controlPointsWithIds = useIdsForInactiveControlPoints(controlPoints);
-  console.log(data.animation);
   return (
     <>
       <path

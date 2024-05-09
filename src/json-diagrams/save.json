@@ -14,7 +14,8 @@
       "data": {
         "type": "round-rectangle",
         "color": "#3F8AE2",
-        "contents": ""
+        "contents": "",
+        "icon": ""
       },
       "selected": false,
       "measured": {
@@ -41,7 +42,8 @@
         "type": "circle",
         "color": "#438D57",
         "title": "asddsd",
-        "description": "khgkjkhkghkugjkhgjgjgkjgkjhgkjghkjhgkjhgkjd\nljhkjhk"
+        "description": "khgkjkhkghkugjkhgjgjgkjgkjhgkjghkjhgkjhgkjd\nljhkjhk",
+        "icon": ""
       },
       "selected": false,
       "measured": {
@@ -57,8 +59,8 @@
       "id": "1715091606596",
       "type": "shape",
       "position": {
-        "x": 315.92394163412746,
-        "y": -0.6913018799634187
+        "x": 325.9742688027768,
+        "y": 4.790694757481674
       },
       "style": {
         "width": 100,
@@ -66,7 +68,8 @@
       },
       "data": {
         "type": "round-rectangle",
-        "color": "#CF4C2C"
+        "color": "#CF4C2C",
+        "icon": ""
       },
       "selected": false,
       "measured": {
@@ -88,7 +91,8 @@
       },
       "data": {
         "type": "round-rectangle",
-        "color": "#438D57"
+        "color": "#438D57",
+        "icon": ""
       },
       "selected": false,
       "measured": {
@@ -105,7 +109,8 @@
       "target": "2",
       "sourceHandle": "bottom",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "2->3",
@@ -113,7 +118,8 @@
       "target": "3",
       "sourceHandle": "left",
       "targetHandle": "right",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "2->4",
@@ -121,7 +127,8 @@
       "target": "4",
       "sourceHandle": "right",
       "targetHandle": "left",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "4->5",
@@ -152,7 +159,8 @@
       "target": "6",
       "sourceHandle": "bottom",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "6->7",
@@ -160,7 +168,8 @@
       "target": "7",
       "sourceHandle": "right",
       "targetHandle": "left",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "4->7",
@@ -168,7 +177,8 @@
       "target": "7",
       "sourceHandle": "bottom",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "7->8",
@@ -176,7 +186,8 @@
       "target": "8",
       "sourceHandle": "bottom",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "5->9",
@@ -184,7 +195,8 @@
       "target": "9",
       "sourceHandle": "left",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "6->10",
@@ -192,7 +204,8 @@
       "target": "10",
       "sourceHandle": "bottom",
       "targetHandle": "top",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "id": "10->8",
@@ -200,7 +213,8 @@
       "target": "8",
       "sourceHandle": "right",
       "targetHandle": "left",
-      "type": "editable-edge"
+      "type": "editable-edge",
+      "selected": false
     },
     {
       "type": "editable-edge",
@@ -211,7 +225,8 @@
       "sourceHandle": "left",
       "target": "1",
       "targetHandle": "right",
-      "id": "xy-edge__4left-1right"
+      "id": "xy-edge__4left-1right",
+      "selected": false
     },
     {
       "type": "editable-edge",
@@ -222,7 +237,8 @@
       "sourceHandle": "right-bottom",
       "target": "4",
       "targetHandle": "left",
-      "id": "xy-edge__1right-bottom-4left"
+      "id": "xy-edge__1right-bottom-4left",
+      "selected": false
     },
     {
       "type": "editable-edge",
@@ -233,7 +249,8 @@
       "sourceHandle": "right",
       "target": "1",
       "targetHandle": "left",
-      "id": "xy-edge__3right-1left"
+      "id": "xy-edge__3right-1left",
+      "selected": false
     },
     {
       "type": "editable-edge",
@@ -244,18 +261,31 @@
       "sourceHandle": "right",
       "target": "1715091606596",
       "targetHandle": "left-bottom",
-      "id": "xy-edge__1715091627240right-1715091606596left-bottom"
+      "id": "xy-edge__1715091627240right-1715091606596left-bottom",
+      "selected": false
     },
     {
       "type": "editable-edge",
       "style": {
-        "strokeWidth": 2
+        "strokeWidth": 2,
+        "strokeDashArray": 1000,
+        "strokeDashOffset": 1000,
+        "animation": "dashdraw 0.4s linear infinite",
+        "animationDirection": "reverse"
       },
       "source": "1",
       "sourceHandle": "right",
       "target": "1715091606596",
       "targetHandle": "left",
-      "id": "xy-edge__1right-1715091606596left"
+      "id": "xy-edge__1right-1715091606596left",
+      "selected": false,
+      "data": {
+        "title": "asdf",
+        "labelPosition": 26,
+        "animation": "animatedDotted",
+        "animationDirection": "reverse"
+      },
+      "animated": true
     }
   ]
 }
