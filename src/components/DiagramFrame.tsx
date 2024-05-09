@@ -38,6 +38,7 @@ import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 import { ConnectionLine } from "./edges/ConnectionLine";
 import savedDiagramJson from "../json-diagrams/save.json";
+import DownloadButton from "./DownloadImage/DownloadImage";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -138,6 +139,7 @@ const Flow = () => {
               >
                 Save
               </button>
+              <DownloadButton />
               <button onClick={() => toggleSidebar()} className="text-black">
                 {isSidebarOpen ? "Hide" : "Show"} JSON
               </button>
