@@ -1,6 +1,6 @@
 import React from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
-import { FaFileDownload } from "react-icons/fa";
+import { FaUpload } from "react-icons/fa";
 
 const downloadJson = (json: string) => {
   const blob = new Blob([json], { type: "application/json" });
@@ -26,11 +26,11 @@ export const DownloadJsonButton = (props: { useDiagram: any }) => {
 
   return (
     <button
-      className="text-black bg-blue-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+      className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
       onClick={onClick}
     >
-      <FaFileDownload color="black" />
       Export
+      <FaUpload color="black" />
     </button>
   );
 };

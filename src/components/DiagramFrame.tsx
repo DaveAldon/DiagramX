@@ -42,6 +42,8 @@ import DownloadJsonButton from "./Downloads/DownloadJson";
 import UploadJsonButton from "./Downloads/UploadJson";
 import { FileUploader } from "react-drag-drop-files";
 import { KeyCode } from "monaco-editor";
+import { IoSync } from "react-icons/io5";
+import { VscJson } from "react-icons/vsc";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -136,21 +138,25 @@ const Flow = () => {
                 <EdgeToolbar takeSnapshot={takeSnapshot} useDiagram={diagram} />
               </Panel>
             ) : null}
-            <Panel className="cursor-pointer gap-2 flex" position="top-right">
+            <Panel className="cursor-pointer gap-1 flex" position="top-right">
               <button
                 onClick={() => diagram.deselectAll()}
-                className="text-black bg-green-100 rounded-md p-1"
+                className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
               >
                 Save
+                <IoSync />
               </button>
               <DownloadImageButton useDiagram={diagram} />
               <DownloadJsonButton useDiagram={diagram} />
               <UploadJsonButton useDiagram={diagram} />
-              <button onClick={() => toggleSidebar()} className="text-black">
-                {isSidebarOpen ? "Hide" : "Show"} JSON
+              <button
+                onClick={() => toggleSidebar()}
+                className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+              >
+                {isSidebarOpen ? "Hide" : "Show"} <VscJson />
               </button>
             </Panel>
-            <Controls showInteractive={false}>
+            <Controls className="text-black" showInteractive={false}>
               <ControlButton onClick={() => diagram.undo()} title="Undo">
                 <CornerUpLeft fillOpacity={0} />
               </ControlButton>
@@ -158,7 +164,7 @@ const Flow = () => {
                 <CornerUpRight fillOpacity={0} />
               </ControlButton>
             </Controls>
-            <MiniMap zoomable draggable nodeComponent={MiniMapNode} />
+            <MiniMap zoomable pannable draggable nodeComponent={MiniMapNode} />
             <diagram.HelperLines
               horizontal={diagram.helperLineHorizontal}
               vertical={diagram.helperLineVertical}

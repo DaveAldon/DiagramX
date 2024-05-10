@@ -49,10 +49,11 @@ export const DownloadImageButton = (props: { useDiagram: any }) => {
 
   return (
     <button
-      className="text-black bg-blue-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+      className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
       onClick={onClick}
     >
-      <IoMdPhotos color="black" /> Image
+      Image
+      <IoMdPhotos color="black" />
     </button>
   );
 };

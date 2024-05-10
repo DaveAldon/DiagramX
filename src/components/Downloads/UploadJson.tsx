@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { FaUpload } from "react-icons/fa";
+import { FaFileDownload } from "react-icons/fa";
 
 export const UploadJsonButton = (props: { useDiagram: any }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,10 +30,11 @@ export const UploadJsonButton = (props: { useDiagram: any }) => {
         onChange={onFileChange}
       />
       <button
-        className="text-black bg-yellow-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+        className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
         onClick={onClick}
       >
-        <FaUpload color="black" /> Import
+        Import
+        <FaFileDownload color="black" />
       </button>
     </>
   );
