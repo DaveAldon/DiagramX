@@ -131,8 +131,18 @@ export function EditableEdge({
     toSide: targetPosition,
   });
   const controlPointsWithIds = useIdsForInactiveControlPoints(controlPoints);
+
   return (
     <>
+      <path
+        d={path}
+        style={{
+          strokeWidth: 24,
+          stroke: "transparent",
+          strokeDasharray: "none",
+        }}
+        fill="transparent"
+      />
       <path
         id={id}
         d={path}

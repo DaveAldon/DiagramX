@@ -1,16 +1,16 @@
 import React from "react";
 import {
-  Panel,
   useReactFlow,
   getNodesBounds,
   getViewportForBounds,
 } from "@xyflow/react";
 import { toPng } from "html-to-image";
+import { IoMdPhotos } from "react-icons/io";
 
 const downloadImage = (dataUrl: string) => {
   const a = document.createElement("a");
 
-  a.setAttribute("download", "reactflow.png");
+  a.setAttribute("download", "DiagramX.png");
   a.setAttribute("href", dataUrl);
   a.click();
 };
@@ -18,9 +18,10 @@ const downloadImage = (dataUrl: string) => {
 const imageWidth = 1024;
 const imageHeight = 768;
 
-export const DownloadButton = () => {
+export const DownloadImageButton = (props: { useDiagram: any }) => {
   const { getNodes } = useReactFlow();
   const onClick = () => {
+    props.useDiagram.deselectAll();
     // we calculate a transform for the nodes so that all nodes are visible
     // we then overwrite the transform of the `.react-flow__viewport` element
     // with the style option of the html-to-image library
@@ -47,10 +48,13 @@ export const DownloadButton = () => {
   };
 
   return (
-    <button className="text-black bg-blue-200 rounded-md p-1" onClick={onClick}>
-      Download Image
+    <button
+      className="text-black bg-blue-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+      onClick={onClick}
+    >
+      <IoMdPhotos color="black" /> Image
     </button>
   );
 };
 
-export default DownloadButton;
+export default DownloadImageButton;

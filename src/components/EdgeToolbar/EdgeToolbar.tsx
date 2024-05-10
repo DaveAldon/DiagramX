@@ -1,7 +1,7 @@
 import React from "react";
 import { Algorithm } from "../edges/EditableEdge/constants";
 import { AnalyticsOutline } from "react-ionicons";
-import { TbVectorSpline } from "react-icons/tb";
+import { TbLetterL, TbVectorSpline } from "react-icons/tb";
 import { TfiVector } from "react-icons/tfi";
 import { Crosshair } from "react-feather";
 import { RxBorderDotted } from "react-icons/rx";
@@ -197,7 +197,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <button
             onClick={() => onShapeChange(Algorithm.Linear)}
             className={`flex justify-center items-center ${
@@ -227,6 +227,16 @@ function EdgeToolbar(props: EdgeToolbarProps) {
             }`}
           >
             <TfiVector color={"black"} />
+          </button>
+          <button
+            onClick={() => onShapeChange(Algorithm.Straight)}
+            className={`flex justify-center items-center ${
+              Algorithm.Straight === activeShape
+                ? "border-black border rounded-md"
+                : "border border-transparent"
+            }`}
+          >
+            <TbLetterL color={"black"} />
           </button>
         </div>
       </div>

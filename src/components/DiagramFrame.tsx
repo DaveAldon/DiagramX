@@ -16,7 +16,6 @@ import {
 import "@xyflow/react/dist/style.css";
 import "./nodeStyles.css";
 import ShapeNode from "./shape-node";
-import { defaultEdges, defaultNodes } from "./initial-elements";
 import Sidebar from "./Sidebar/Sidebar";
 import MiniMapNode from "./minimap-node";
 import { Leva, useControls } from "leva";
@@ -38,7 +37,11 @@ import { EditableEdge } from "./edges/EditableEdge";
 import EdgeToolbar from "./EdgeToolbar/EdgeToolbar";
 import { ConnectionLine } from "./edges/ConnectionLine";
 import savedDiagramJson from "../json-diagrams/save.json";
-import DownloadButton from "./DownloadImage/DownloadImage";
+import DownloadImageButton from "./Downloads/DownloadImage";
+import DownloadJsonButton from "./Downloads/DownloadJson";
+import UploadJsonButton from "./Downloads/UploadJson";
+import { FileUploader } from "react-drag-drop-files";
+import { KeyCode } from "monaco-editor";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -122,6 +125,7 @@ const Flow = () => {
             elevateNodesOnSelect
             maxZoom={10}
             minZoom={0.1}
+            multiSelectionKeyCode={["Meta", "Control"]}
           >
             <Background color="grey" bgColor="white" />
             <Panel position="top-left">
@@ -139,7 +143,9 @@ const Flow = () => {
               >
                 Save
               </button>
-              <DownloadButton />
+              <DownloadImageButton useDiagram={diagram} />
+              <DownloadJsonButton useDiagram={diagram} />
+              <UploadJsonButton useDiagram={diagram} />
               <button onClick={() => toggleSidebar()} className="text-black">
                 {isSidebarOpen ? "Hide" : "Show"} JSON
               </button>

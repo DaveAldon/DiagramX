@@ -11,7 +11,13 @@ import {
   useReactFlow as useReactFlowHook,
   useStore,
 } from "@xyflow/react";
-import { DragEventHandler, useCallback, useRef, useState } from "react";
+import {
+  DragEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useUndoRedo from "./useUndoRedo";
 import { useAppStore } from "@/components/store";
 import { DEFAULT_ALGORITHM } from "@/components/edges/EditableEdge/constants";
@@ -38,6 +44,28 @@ export const useDiagram = () => {
   };
   const [selectedNodeId, setSelectedNodeId] = useState<string>();
 
+  const selectAllNodes = () => {
+    setNodes((nodes) => nodes.map((node) => ({ ...node, selected: true })));
+  };
+
+  const deselectAll = () => {
+    setNodes((nodes) => nodes.map((node) => ({ ...node, selected: false })));
+    setEdges((edges) => edges.map((edge) => ({ ...edge, selected: false })));
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey && event.key === "a") {
+        event.preventDefault();
+        selectAllNodes();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   /*   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (selectedNodeId) {
@@ -60,6 +88,19 @@ export const useDiagram = () => {
       }
     };
   }, [getNode, selectedNodeId, setNodes]); */
+
+  const uploadJson = (jsonString: string) => {
+    const diagramData = JSON.parse(jsonString);
+
+    if (diagramData.nodes && diagramData.edges) {
+      setNodes(diagramData.nodes);
+      setEdges(diagramData.edges);
+    } else {
+      console.error(
+        'Invalid JSON format. Expected an object with "nodes" and "edges" arrays.'
+      );
+    }
+  };
 
   // this function is called when a node from the sidebar is dropped onto the react flow pane
   const onDrop: DragEventHandler<HTMLDivElement> = (evt) => {
@@ -241,11 +282,6 @@ export const useDiagram = () => {
     });
   };
 
-  const deselectAll = () => {
-    setNodes((nodes) => nodes.map((node) => ({ ...node, selected: false })));
-    setEdges((edges) => edges.map((edge) => ({ ...edge, selected: false })));
-  };
-
   return {
     onDragOver,
     onDrop,
@@ -277,5 +313,6 @@ export const useDiagram = () => {
     setEdges,
     useStore,
     deselectAll,
+    uploadJson,
   };
 };
