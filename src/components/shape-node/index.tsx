@@ -13,10 +13,13 @@ import Shape from "../shape";
 import { type ShapeType } from "../shape/types";
 import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName, fas } from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+library.add(fas);
 
 export type ShapeNodeData = {
   type: ShapeType;
@@ -37,18 +40,13 @@ const ShapeNode = ({ id, selected, data }: any) => {
   const { setNodes } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const { takeSnapshot } = useUndoRedo();
-  const [iconsLoaded, setIconsLoaded] = useState(false);
-
   const { width, height } = useNodeDimensions(id);
   const shiftKeyPressed = useKeyPress("Shift");
   const handleStyle = { backgroundColor: color };
 
   useEffect(() => {
     if (data.icon) {
-      setTimeout(() => {
-        setIconsLoaded(true);
-        console.log("Icons loaded", data.icon);
-      }, 3000);
+      onIconChange(data.icon);
     }
   }, []);
 
