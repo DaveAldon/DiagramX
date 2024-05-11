@@ -36,7 +36,8 @@ export default function ButtonEdge({
     sourceX,
     sourceY,
     targetX,
-    targetY
+    targetY,
+    id
   );
 
   const onEdgeClick = () => {
