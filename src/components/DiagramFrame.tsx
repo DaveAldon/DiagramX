@@ -45,6 +45,7 @@ import { VscJson } from "react-icons/vsc";
 import AboutButton from "./Downloads/AboutButton";
 import { useToast } from "./Toast/useToast";
 import { About } from "./About";
+import ThemeToggle from "./Downloads/ThemeToggle";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -63,13 +64,25 @@ const Flow = () => {
   const { getSnapshotJson, takeSnapshot } = useUndoRedo();
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState<boolean>(false);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState<boolean>(false);
+  const [width] = useWindowSize();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
   const controls = useControls({
-    theme: { options: ["light"] },
+    theme: { options: ["light", "dark"] },
     snapToGrid: false,
     panOnScroll: true,
     zoomOnDoubleClick: false,
   });
-  const [width] = useWindowSize();
+
+  const darkModeToggle = () => {
+    if (theme === "light") {
+      setTheme("dark");
+      document.documentElement.classList.add("dark");
+    } else {
+      setTheme("light");
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   const getDefaultSize = (w: number) => {
     if (w < 1024) {
@@ -120,7 +133,7 @@ const Flow = () => {
           <PanelGroup direction="horizontal">
             <ResizablePanel minSize={30} order={1}>
               <ReactFlow
-                className={controls.theme}
+                className={theme}
                 onConnect={diagram.onConnect}
                 onConnectStart={diagram.onConnectStart}
                 //onConnectEnd={diagram.onConnectEnd}
@@ -176,6 +189,10 @@ const Flow = () => {
                       toggleLeftSidebar();
                     }}
                   />
+                  <ThemeToggle
+                    onClick={darkModeToggle}
+                    isDarkMode={theme === "dark"}
+                  />
                   <button
                     onClick={() => {
                       diagram.deselectAll();
@@ -185,7 +202,7 @@ const Flow = () => {
                           "The latest changes to your DiagramX have been saved. You can download them as an image or Json file.",
                       });
                     }}
-                    className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+                    className="text-black dark:text-white bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
                   >
                     Save
                     <IoSync />
