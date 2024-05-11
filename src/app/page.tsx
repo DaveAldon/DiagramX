@@ -5,7 +5,7 @@ import DiagramFrame from "@components/DiagramFrame";
 
 export default function Home() {
   return (
-    <main className="font-mono">
+    <main className="font-mono text-black dark:text-white">
       <div className="flex flex-col min-h-screen">
         <div className="hidden h-16 items-center justify-between bg-green-300">
           <h1 className="">Header</h1>

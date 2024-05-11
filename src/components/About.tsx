@@ -3,7 +3,7 @@ import { IoMdClose } from "react-icons/io";
 
 export const About = (props: { onClick: () => void }) => {
   return (
-    <div className="bg-white text-black p-4 flex flex-col gap-4 w-full">
+    <div className="bg-white dark:bg-black p-4 flex flex-col gap-4 w-full">
       <div className="flex flex-row justify-between">
         <div className="italic font-semibold text-2xl">About DiagramX</div>
         <div

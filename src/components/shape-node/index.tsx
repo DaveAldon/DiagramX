@@ -13,17 +13,15 @@ import Shape from "../shape";
 import { type ShapeType } from "../shape/types";
 import NodeLabel from "./label";
 import ShapeNodeToolbar from "../Toolbar/Toolbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useUndoRedo from "@/hooks/useUndoRedo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconName } from "@fortawesome/free-solid-svg-icons";
+import { IconName, fas } from "@fortawesome/free-solid-svg-icons";
 
 export type ShapeNodeData = {
   type: ShapeType;
   color: string;
 };
-
-const fileTypes = ["JPG", "PNG", "GIF"];
 
 // this will return the current dimensions of the node (measured internally by react flow)
 const useNodeDimensions = (id: string) => {
@@ -39,10 +37,20 @@ const ShapeNode = ({ id, selected, data }: any) => {
   const { setNodes } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const { takeSnapshot } = useUndoRedo();
+  const [iconsLoaded, setIconsLoaded] = useState(false);
 
   const { width, height } = useNodeDimensions(id);
   const shiftKeyPressed = useKeyPress("Shift");
   const handleStyle = { backgroundColor: color };
+
+  useEffect(() => {
+    if (data.icon) {
+      setTimeout(() => {
+        setIconsLoaded(true);
+        console.log("Icons loaded", data.icon);
+      }, 3000);
+    }
+  }, []);
 
   const onColorChange = (color: string) => {
     takeSnapshot();
@@ -140,7 +148,7 @@ const ShapeNode = ({ id, selected, data }: any) => {
     );
   };
 
-  const onIconChange = (icon: any) => {
+  const onIconChange = (icon: string) => {
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === id) {
@@ -185,10 +193,10 @@ const ShapeNode = ({ id, selected, data }: any) => {
       />
       <div style={{ position: "relative" }}>
         <input
-          className={`absolute bottom-full p-2 text-center w-full text-sm font-bold text-black ${
+          className={`absolute bottom-full p-2 text-center w-full text-sm font-bold  ${
             data.title === undefined || data.title === ""
               ? "bg-transparent"
-              : "bg-white bg-opacity-10 backdrop-blur-sm rounded-md"
+              : "bg-white bg-opacity-10 backdrop-blur-sm rounded-md dark:bg-black"
           }`}
           //placeholder={data.type}
           value={data.title}
@@ -204,10 +212,10 @@ const ShapeNode = ({ id, selected, data }: any) => {
           fillOpacity={0.2}
         />
         <TextareaAutosize
-          className={`absolute resize-none top-full p-2 text-left w-full text-xs text-black ${
+          className={`absolute resize-none top-full p-2 text-left w-full text-xs  ${
             data.description === undefined || data.description === ""
               ? "bg-transparent"
-              : "bg-white bg-opacity-10 backdrop-blur-sm rounded-md"
+              : "bg-white dark:bg-black bg-opacity-10 backdrop-blur-sm rounded-md"
           }`}
           //placeholder={data.type}
           value={data.description}

@@ -1,6 +1,7 @@
 import { useHelperLines } from "@/hooks/useHelperLines";
 import {
   Edge,
+  Node,
   NodeChange,
   OnConnect,
   OnEdgesDelete,
@@ -8,7 +9,6 @@ import {
   OnNodesDelete,
   SelectionDragHandler,
   addEdge,
-  applyNodeChanges,
   useReactFlow as useReactFlowHook,
   useStore,
 } from "@xyflow/react";
@@ -113,7 +113,6 @@ export const useDiagram = () => {
 
   const uploadJson = (jsonString: string) => {
     const diagramData = JSON.parse(jsonString);
-
     if (diagramData.nodes && diagramData.edges) {
       setNodes(diagramData.nodes);
       setEdges(diagramData.edges);

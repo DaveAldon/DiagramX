@@ -202,7 +202,7 @@ export function EditableEdge({
                     ? `border-dance 1s infinite linear ${data.animationDirection}`
                     : "none",
               }}
-              className={` bottom-full p-2 text-center text-sm text-black bg-white rounded-md`}
+              className={` bottom-full p-2 text-center text-sm  dark:bg-black bg-white rounded-md`}
             >{`${data.title}`}</div>
           ) : null}
         </div>

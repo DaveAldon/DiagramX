@@ -57,7 +57,10 @@ const IconPicker = ({ value, onChange }: FontAwesomeIconPickerProps) => {
             title={icon.iconName}
             onClick={() => onChange?.(icon.iconName)}
           >
-            <FontAwesomeIcon icon={icon} />
+            <FontAwesomeIcon
+              icon={icon}
+              className="text-black dark:text-white"
+            />
           </button>
         )}
       </div>
@@ -67,20 +70,20 @@ const IconPicker = ({ value, onChange }: FontAwesomeIconPickerProps) => {
   return (
     <div className="pl-1">
       <div className="flex flex-row gap-2">
-        <button className="text-black">
+        <button className="">
           {value ? (
             <div className="flex flex-row gap-2 justify-center items-center">
               <FontAwesomeIcon
                 onClick={(e: any) => setAnchorEl(e.currentTarget)}
                 icon={["fas", value as IconName]}
-                color="#000000"
+                className="text-black dark:text-white"
               />
               <button
                 onClick={() => {
                   setAnchorEl(null);
                   onChange?.("");
                 }}
-                className="text-black bg-red-100 rounded-md p-1"
+                className=" bg-red-100 rounded-md p-1 dark:bg-red-700"
               >
                 Clear
               </button>
@@ -96,7 +99,7 @@ const IconPicker = ({ value, onChange }: FontAwesomeIconPickerProps) => {
         <div className="iconPicker__popoverContainer">
           <div className="iconPicker__popoverHeader">
             <input
-              className="rounded-md pl-2"
+              className="rounded-md pl-2 bg-white dark:bg-black dark:text-white"
               type="text"
               placeholder="Search"
               value={searchText}

@@ -11,7 +11,7 @@ function NodeLabel(props: {
 
   return (
     <TextareaAutosize
-      className={`node-label resize-none p-2 text-center text-sm text-black `}
+      className={`node-label resize-none p-2 text-center text-sm  `}
       //placeholder={data.type}
       value={props.data}
       onChange={(e) => props.onContentsChange(e.target.value)}

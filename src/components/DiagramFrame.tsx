@@ -18,7 +18,6 @@ import "./nodeStyles.css";
 import ShapeNode from "./shape-node";
 import Sidebar from "./Sidebar/Sidebar";
 import MiniMapNode from "./minimap-node";
-import { Leva, useControls } from "leva";
 import { useDiagram } from "@/hooks/useDiagram";
 import { CornerUpLeft, CornerUpRight } from "react-feather";
 import useUndoRedo from "@/hooks/useUndoRedo";
@@ -30,7 +29,7 @@ import {
 const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
   ssr: false,
 });
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import { EditableEdge } from "./edges/EditableEdge";
@@ -46,6 +45,15 @@ import AboutButton from "./Downloads/AboutButton";
 import { useToast } from "./Toast/useToast";
 import { About } from "./About";
 import ThemeToggle from "./Downloads/ThemeToggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./DropDownMenu/DropDownMenu";
+import { RiMenu3Fill } from "react-icons/ri";
+import { useTheme } from "@/hooks/useTheme";
 
 const nodeTypes: NodeTypes = {
   shape: ShapeNode,
@@ -53,8 +61,6 @@ const nodeTypes: NodeTypes = {
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
   type: "editable-edge",
-  /* markerStart: "some-arrow",
-  markerEnd: "some-arrow", */
   style: { strokeWidth: 2 },
 };
 
@@ -65,24 +71,8 @@ const Flow = () => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState<boolean>(false);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState<boolean>(false);
   const [width] = useWindowSize();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  const controls = useControls({
-    theme: { options: ["light", "dark"] },
-    snapToGrid: false,
-    panOnScroll: true,
-    zoomOnDoubleClick: false,
-  });
-
-  const darkModeToggle = () => {
-    if (theme === "light") {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      setTheme("light");
-      document.documentElement.classList.remove("dark");
-    }
-  };
+  const themeHook = useTheme();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getDefaultSize = (w: number) => {
     if (w < 1024) {
@@ -108,14 +98,94 @@ const Flow = () => {
     "editable-edge": EditableEdgeWrapper,
   };
 
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const json = e.target?.result as string;
+        diagram.uploadJson(json);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const Menu = () => {
+    return (
+      <div className="gap-0 cursor-pointer flex">
+        <AboutButton
+          onClick={() => {
+            toggleLeftSidebar();
+          }}
+        />
+        <ThemeToggle
+          onClick={themeHook.darkModeToggle}
+          isDarkMode={themeHook.theme === "dark"}
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex flex-row gap-2 justify-center items-center p-1 pl-2 rounded-md hover:bg-slate-200 hover:dark:bg-slate-700 dark:bg-slate-800">
+            Menu
+            <RiMenu3Fill />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-black text-black dark:text-white">
+            <DropdownMenuLabel className="w-full justify-start">
+              <button
+                onClick={() => {
+                  diagram.deselectAll();
+                  toast({
+                    title: "Save successful!",
+                    description:
+                      "The latest changes to your DiagramX have been saved. You can download them as an image or Json file.",
+                  });
+                }}
+                className="w-full font-normal dark:text-white dark:hover:bg-slate-800 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-between items-center"
+              >
+                Save
+                <IoSync />
+              </button>
+            </DropdownMenuLabel>
+            <DropdownMenuItem>
+              <DownloadImageButton useDiagram={diagram} />
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <DownloadJsonButton useDiagram={diagram} />
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <UploadJsonButton
+                onClick={() => {
+                  fileInputRef.current?.click();
+                }}
+              />
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <button
+                onClick={() => toggleRightSidebar()}
+                className="w-full dark:text-white dark:hover:bg-slate-800 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-between items-center"
+              >
+                {isRightSidebarOpen ? "Hide" : "Show"} Json
+                <VscJson />
+              </button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          accept=".json"
+          onInput={onFileChange}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="w-full h-full">
-      <Leva hidden />
       <PanelGroup direction="horizontal">
         {isLeftSidebarOpen ? (
           <ResizablePanel
             order={1}
-            className="bg-white"
+            className="bg-white dark:bg-black"
             defaultSize={getDefaultSize(width)}
             minSize={getDefaultSize(width)}
           >
@@ -133,7 +203,7 @@ const Flow = () => {
           <PanelGroup direction="horizontal">
             <ResizablePanel minSize={30} order={1}>
               <ReactFlow
-                className={theme}
+                className={themeHook.theme || "light"}
                 onConnect={diagram.onConnect}
                 onConnectStart={diagram.onConnectStart}
                 //onConnectEnd={diagram.onConnectEnd}
@@ -148,12 +218,12 @@ const Flow = () => {
                 connectionLineType={ConnectionLineType.SmoothStep}
                 fitView
                 connectionMode={ConnectionMode.Loose}
-                panOnScroll={controls.panOnScroll}
+                panOnScroll={true}
                 onDrop={diagram.onDrop}
-                snapToGrid={controls.snapToGrid}
+                snapToGrid={false}
                 snapGrid={[10, 10]}
                 onDragOver={diagram.onDragOver}
-                zoomOnDoubleClick={controls.zoomOnDoubleClick}
+                zoomOnDoubleClick={false}
                 onNodesChange={diagram.onNodesChange}
                 onNodeDragStart={diagram.onNodeDragStart}
                 onSelectionDragStart={diagram.onSelectionDragStart}
@@ -168,7 +238,10 @@ const Flow = () => {
                 minZoom={0.1}
                 multiSelectionKeyCode={["Meta", "Control"]}
               >
-                <Background color="grey" bgColor="white" />
+                <Background
+                  color="grey"
+                  bgColor={themeHook.theme === "dark" ? "black" : "white"}
+                />
                 <Panel position="top-left">
                   <Sidebar />
                 </Panel>
@@ -180,44 +253,10 @@ const Flow = () => {
                     />
                   </Panel>
                 ) : null}
-                <Panel
-                  className="cursor-pointer gap-1 flex"
-                  position="top-right"
-                >
-                  <AboutButton
-                    onClick={() => {
-                      toggleLeftSidebar();
-                    }}
-                  />
-                  <ThemeToggle
-                    onClick={darkModeToggle}
-                    isDarkMode={theme === "dark"}
-                  />
-                  <button
-                    onClick={() => {
-                      diagram.deselectAll();
-                      toast({
-                        title: "Save successful!",
-                        description:
-                          "The latest changes to your DiagramX have been saved. You can download them as an image or Json file.",
-                      });
-                    }}
-                    className="text-black dark:text-white bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
-                  >
-                    Save
-                    <IoSync />
-                  </button>
-                  <DownloadImageButton useDiagram={diagram} />
-                  <DownloadJsonButton useDiagram={diagram} />
-                  <UploadJsonButton useDiagram={diagram} />
-                  <button
-                    onClick={() => toggleRightSidebar()}
-                    className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
-                  >
-                    {isRightSidebarOpen ? "Hide" : "Show"} <VscJson />
-                  </button>
+                <Panel position="top-right">
+                  <Menu />
                 </Panel>
-                <Controls className="text-black" showInteractive={false}>
+                <Controls className="" showInteractive={false}>
                   <ControlButton onClick={() => diagram.undo()} title="Undo">
                     <CornerUpLeft fillOpacity={0} />
                   </ControlButton>

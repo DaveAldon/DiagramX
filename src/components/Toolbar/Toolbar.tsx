@@ -42,20 +42,24 @@ function ShapeNodeToolbar({
 
   return (
     <NodeToolbar className="nowheel nodrag flex flex-col" offset={32}>
-      <div className="flex flex-row gap-2">
-        {colors.map((color) => (
-          <button
-            key={color}
-            style={{ backgroundColor: color }}
-            onClick={() => onColorChange(color)}
-            className={`color-swatch ${color === activeColor ? "active" : ""}`}
-          />
-        ))}
-        {onDeleteNode ? (
-          <button onClick={() => onDeleteNode()}>
-            <Trash2 color="black" />
-          </button>
-        ) : null}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-0.5">
+          {colors.map((color) => (
+            <button
+              key={color}
+              style={{ backgroundColor: color }}
+              onClick={() => onColorChange(color)}
+              className={`color-swatch ${
+                color === activeColor ? "active" : ""
+              }`}
+            />
+          ))}
+          {onDeleteNode ? (
+            <button onClick={() => onDeleteNode()}>
+              <Trash2 />
+            </button>
+          ) : null}
+        </div>
       </div>
       <IconPicker value={iconName} onChange={setIconName} />
       <div className="grid grid-cols-10">

@@ -26,11 +26,11 @@ export const DownloadJsonButton = (props: { useDiagram: any }) => {
 
   return (
     <button
-      className="text-black bg-gray-100 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-center items-center"
+      className="w-full dark:text-white dark:hover:bg-slate-800 hover:bg-gray-200 rounded-md p-1 flex flex-row gap-1 justify-between items-center"
       onClick={onClick}
     >
-      Export
-      <FaUpload color="black" />
+      Export Json
+      <FaUpload />
     </button>
   );
 };

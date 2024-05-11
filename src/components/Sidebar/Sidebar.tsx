@@ -7,7 +7,7 @@ function Sidebar() {
     <div className="sidebar">
       <div className="sidebar-label flex flex-row gap-1 justify-center items-center">
         Drag
-        <RiDragMove2Fill color="black" />
+        <RiDragMove2Fill />
       </div>
       <div className="grid grid-cols-1">
         {Object.keys(ShapeComponents).map((type) => (

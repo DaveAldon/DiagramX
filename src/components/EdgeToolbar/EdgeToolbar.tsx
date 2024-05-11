@@ -178,11 +178,11 @@ function EdgeToolbar(props: EdgeToolbarProps) {
 
   return (
     <div
-      className={`nodrag rounded-md flex flex-col bg-transparent text-black gap-1 ${
+      className={`nodrag rounded-md flex flex-col bg-transparent gap-1 ${
         editingEdgeId ? "visible" : "hidden"
       }`}
     >
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-row gap-0.5">
           {colors.map((color) => (
             <button
@@ -202,41 +202,41 @@ function EdgeToolbar(props: EdgeToolbarProps) {
             onClick={() => onShapeChange(Algorithm.Linear)}
             className={`flex justify-center items-center ${
               Algorithm.Linear === activeShape
-                ? " border-black border rounded-md"
+                ? "border-black dark:border-white border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <AnalyticsOutline color={"black"} />
+            <AnalyticsOutline cssClasses={"text-black dark:text-white"} />
           </button>
           <button
             onClick={() => onShapeChange(Algorithm.BezierCatmullRom)}
             className={`flex justify-center items-center ${
               Algorithm.BezierCatmullRom === activeShape
-                ? "border-black border rounded-md"
+                ? "border-black dark:border-white border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <TbVectorSpline color={"black"} />
+            <TbVectorSpline />
           </button>
           <button
             onClick={() => onShapeChange(Algorithm.CatmullRom)}
             className={`flex justify-center items-center ${
               Algorithm.CatmullRom === activeShape
-                ? "border-black border rounded-md"
+                ? "border-black dark:border-white border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <TfiVector color={"black"} />
+            <TfiVector />
           </button>
           <button
             onClick={() => onShapeChange(Algorithm.Straight)}
             className={`flex justify-center items-center ${
               Algorithm.Straight === activeShape
-                ? "border-black border rounded-md"
+                ? "border-black dark:border-white border rounded-md"
                 : "border border-transparent"
             }`}
           >
-            <TbLetterL color={"black"} />
+            <TbLetterL />
           </button>
         </div>
       </div>
@@ -245,7 +245,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeShowMovingBall === true
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => onMovingBallChange(true)}
@@ -255,7 +255,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimationDirection === AnimationDirection.Normal
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => changeAnimationDirection("normal")}
@@ -265,7 +265,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeShowMovingBall === false
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => onMovingBallChange(false)}
@@ -275,7 +275,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimationDirection === AnimationDirection.Reverse
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => changeAnimationDirection("reverse")}
@@ -287,7 +287,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.AnimatedDotted
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => setAnimatedDotted()}
@@ -297,24 +297,24 @@ function EdgeToolbar(props: EdgeToolbarProps) {
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.Dotted
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => {
             setDotted();
           }}
         >
-          <RxBorderDotted color="black" size={30} />
+          <RxBorderDotted size={30} />
         </button>
         <button
           className={`flex justify-center items-center ${
             activeAnimation === Animation.Solid
-              ? " border-black border rounded-md"
+              ? " border-black dark:border-white border rounded-md"
               : "border border-transparent"
           }`}
           onClick={() => setSolid()}
         >
-          <IoRemoveOutline color="black" size={30} />
+          <IoRemoveOutline size={30} />
         </button>
       </div>
       <div className="grid grid-cols-1 justify-between">
@@ -323,7 +323,7 @@ function EdgeToolbar(props: EdgeToolbarProps) {
           value={edgeTitle as string}
           onChange={(e) => onUpdateEdgeTitle(e.target.value)}
           placeholder="Edge Title"
-          className="border border-black rounded-md p-2"
+          className="border bg-white dark:bg-black border-black rounded-md p-2 text-black dark:text-white"
         />
       </div>
     </div>
