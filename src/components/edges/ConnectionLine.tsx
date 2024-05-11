@@ -3,7 +3,7 @@ import { MarkerType, type ConnectionLineComponentProps } from "@xyflow/react";
 
 import { useAppStore } from "../store";
 import { getPath } from "./EditableEdge";
-import { Algorithm, COLORS, DEFAULT_ALGORITHM } from "./EditableEdge/constants";
+import { Algorithm, DEFAULT_ALGORITHM } from "./EditableEdge/constants";
 
 // The distance between points when free drawing
 const DISTANCE = DEFAULT_ALGORITHM === Algorithm.BezierCatmullRom ? 50 : 25;

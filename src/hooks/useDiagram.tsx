@@ -1,6 +1,7 @@
 import { useHelperLines } from "@/hooks/useHelperLines";
 import {
   Edge,
+  NodeChange,
   OnConnect,
   OnEdgesDelete,
   OnNodeDrag,
@@ -27,8 +28,14 @@ import { debounce } from "lodash";
 
 export const useDiagram = () => {
   const useReactFlow = useReactFlowHook;
-  const { screenToFlowPosition, setNodes, setEdges, getEdges, getEdge } =
-    useReactFlow();
+  const {
+    screenToFlowPosition,
+    setNodes,
+    setEdges,
+    getEdges,
+    getEdge,
+    getNodes,
+  } = useReactFlow();
   const { undo, redo, canUndo, canRedo, takeSnapshot } = useUndoRedo();
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const connectingNodeId = useRef(null);
@@ -46,6 +53,21 @@ export const useDiagram = () => {
 
   const selectAllNodes = () => {
     setNodes((nodes) => nodes.map((node) => ({ ...node, selected: true })));
+    setEdges((edges) => edges.map((edge) => ({ ...edge, selected: true })));
+    /* setEdges((edges) =>
+      edges.map((edge) => {
+        //if (!isEditableEdge(edge)) return edge;
+
+        const points = (edge.data?.points as ControlPointData[]) ?? [];
+        const updatedPoints = points.map((point) => ({
+          ...point,
+          selected: true,
+        }));
+        const updatedData = { ...edge.data, points: updatedPoints };
+
+        return { ...edge, data: updatedData };
+      })
+    ); */
   };
 
   const deselectAll = () => {
@@ -130,13 +152,29 @@ export const useDiagram = () => {
   };
 
   const onNodesChange = useCallback(
-    debounce((changes) => {
-      setNodes((nodes) =>
-        applyNodeChanges(handleHelperLines(changes, nodes), nodes)
-      );
-    }, 1), // 100ms delay
-    [setNodes, handleHelperLines]
+    (changes: NodeChange[]) => {
+      const debouncedFunction = debounce(() => {
+        handleHelperLines(changes, getNodes());
+      }, 1); // 100ms delay
+
+      debouncedFunction();
+    },
+    [getNodes, handleHelperLines]
   );
+
+  // Inefficient method of dragging nodes
+  /*   const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      const debouncedFunction = debounce(() => {
+        setNodes((nodes) =>
+          applyNodeChanges(handleHelperLines(changes, nodes), nodes)
+        );
+      }, 1); // 100ms delay
+
+      debouncedFunction();
+    },
+    [setNodes, handleHelperLines]
+  ); */
 
   const onConnect: OnConnect = useCallback(
     (connection) => {
