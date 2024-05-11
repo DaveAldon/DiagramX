@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import MonacoEditor from "react-monaco-editor";
 import "./jsonViewer.css";
+import { IoMdClose } from "react-icons/io";
 
 interface JsonViewerProps {
   jsonString: string;
+  toggleRightSidebar: () => void;
 }
 
-const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
+const JsonViewer: React.FC<JsonViewerProps> = (props: JsonViewerProps) => {
   let prettyJsonString: string;
   const observedDiv = useRef<any>(null);
   const [width, setWidth] = useState();
@@ -14,7 +16,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
   const [syntaxHighlighting, setSyntaxHighlighting] = useState<boolean>(false);
 
   try {
-    const jsonObj = JSON.parse(jsonString);
+    const jsonObj = JSON.parse(props.jsonString);
     prettyJsonString = JSON.stringify(jsonObj, null, 2);
   } catch (error) {
     prettyJsonString = "Invalid JSON string";
@@ -68,7 +70,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
       ref={observedDiv}
       className="w-full json-viewer overflow-y-auto bg-[#1e1e1e]"
     >
-      <div className="flex flex-row h-16">
+      <div className="flex flex-row h-16 justify-between items-center p-4">
         <button
           className="text-white p-2 m-2 bg-slate-800 rounded-md"
           onClick={copyAll}
@@ -81,6 +83,12 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ jsonString }) => {
         >
           Syntax
         </button>
+        <div
+          onClick={props.toggleRightSidebar}
+          className="flex text-white hover:text-black cursor-pointer h-8 flex-row gap-3 justify-center items-center border-[1px] border-white hover:bg-gray-100 p-2 rounded-md"
+        >
+          <IoMdClose />
+        </div>
       </div>
       <MonacoEditor
         width={width}
