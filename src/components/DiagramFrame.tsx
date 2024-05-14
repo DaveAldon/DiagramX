@@ -29,7 +29,7 @@ import {
 const JsonViewer = dynamic(() => import("./JsonViewer/JsonViewer"), {
   ssr: false,
 });
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import { EditableEdge } from "./edges/EditableEdge";

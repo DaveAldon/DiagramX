@@ -167,43 +167,45 @@ export function EditableEdge({
           className="nodrag nopan"
         >
           {data.title ? (
-            <div
-              ref={draggableEdgeLabelRef as RefObject<HTMLInputElement>}
-              style={{
-                borderColor: `${color}`,
-                borderWidth: "2px",
-                borderStyle:
-                  data.animation === Animation.Solid ? "solid" : "none",
-                /* animation:
+            <foreignObject x="10" y="10" width="100" height="100">
+              <div
+                ref={draggableEdgeLabelRef as RefObject<HTMLInputElement>}
+                style={{
+                  borderColor: `${color}`,
+                  borderWidth: "2px",
+                  borderStyle:
+                    data.animation === Animation.Solid ? "solid" : "none",
+                  /* animation:
                   data.animation === "not implemented"
                     ? "dashdraw_edge 2s linear infinite, dashrotate 2s linear infinite" // Apply both animations
                     : "none", */
-                backgroundImage:
-                  data.animation === Animation.Solid
-                    ? "none"
-                    : (`linear-gradient(90deg, ${color} 50%, transparent 50%),
+                  backgroundImage:
+                    data.animation === Animation.Solid
+                      ? "none"
+                      : (`linear-gradient(90deg, ${color} 50%, transparent 50%),
                       linear-gradient(90deg, ${color} 50%, transparent 50%),
                       linear-gradient(0deg, ${color} 50%, transparent 50%),
                       linear-gradient(0deg, ${color} 50%, transparent 50%)` as string),
-                backgroundRepeat:
-                  data.animation === Animation.Solid
-                    ? "none"
-                    : "repeat-x, repeat-x, repeat-y, repeat-y",
-                backgroundSize:
-                  data.animation === Animation.Solid
-                    ? "none"
-                    : "15px 2px, 15px 2px, 2px 15px, 2px 15px",
-                backgroundPosition:
-                  data.animation === Animation.Solid
-                    ? "none"
-                    : "left top, right bottom, left bottom, right top",
-                animation:
-                  data.animation === Animation.AnimatedDotted
-                    ? `border-dance 1s infinite linear ${data.animationDirection}`
-                    : "none",
-              }}
-              className={` bottom-full p-2 text-center text-sm  dark:bg-black bg-white rounded-md`}
-            >{`${data.title}`}</div>
+                  backgroundRepeat:
+                    data.animation === Animation.Solid
+                      ? "none"
+                      : "repeat-x, repeat-x, repeat-y, repeat-y",
+                  backgroundSize:
+                    data.animation === Animation.Solid
+                      ? "none"
+                      : "15px 2px, 15px 2px, 2px 15px, 2px 15px",
+                  backgroundPosition:
+                    data.animation === Animation.Solid
+                      ? "none"
+                      : "left top, right bottom, left bottom, right top",
+                  animation:
+                    data.animation === Animation.AnimatedDotted
+                      ? `border-dance 1s infinite linear ${data.animationDirection}`
+                      : "none",
+                }}
+                className={`bottom-full p-2 text-center text-sm dark:bg-black bg-white rounded-md`}
+              >{`${data.title}`}</div>
+            </foreignObject>
           ) : null}
         </div>
       </EdgeLabelRenderer>

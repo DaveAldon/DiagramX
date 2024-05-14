@@ -17,6 +17,7 @@ import { useToast } from "./Toast/useToast";
 import { useTheme } from "@/hooks/useTheme";
 import { useDiagram } from "@/hooks/useDiagram";
 import { useRef } from "react";
+import DownloadGifButton from "./Downloads/DownloadGif";
 
 interface MenuProps {
   themeHook: ReturnType<typeof useTheme>;
@@ -75,6 +76,9 @@ export const Menu = (props: MenuProps) => {
           </DropdownMenuLabel>
           <DropdownMenuItem>
             <DownloadImageButton useDiagram={props.diagram} />
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <DownloadGifButton useDiagram={props.diagram} />
           </DropdownMenuItem>
           <DropdownMenuItem>
             <DownloadJsonButton useDiagram={props.diagram} />
