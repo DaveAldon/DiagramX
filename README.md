@@ -1,13 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DiagramX
 
-Using these icons:
+DiagramX is a website that lets you get to the point and make diagrams.
 
-https://react-icons.github.io/react-icons/
+![DiagramX](/public/main.png)
 
-## Getting Started
+The diagrams are source-control friendly with a json format.
 
-First, run the development server:
+![DiagramX](/public/sidebar.png)
 
-```bash
-npm run dev
-```
+You can also export the diagrams to SVG with some animations included, or static photos.
+
+![DiagramX](/public/menu.png)
